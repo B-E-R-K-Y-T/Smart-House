@@ -32,7 +32,7 @@ async def read_file():
 
             print(file_read)
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(5)
 
 if __name__ == '__main__':
     asyncio.run(read_file())

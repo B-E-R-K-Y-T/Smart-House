@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4fb2ab44-0423-4c8c-82a0-a2cc95773445" name="Changes" comment="Version_3">
+    <list default="true" id="4fb2ab44-0423-4c8c-82a0-a2cc95773445" name="Changes" comment="Version_4">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/base_server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot_authorization_mode.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_authorization_mode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot_reg_mode.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_reg_mode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commands.csv" beforeDir="false" afterPath="$PROJECT_DIR$/commands.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parse_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/parse_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users.csv" beforeDir="false" afterPath="$PROJECT_DIR$/users.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_sensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_sensor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +192,14 @@
       <option name="project" value="LOCAL" />
       <updated>1642884204247</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Version_4">
+      <created>1642886433793</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1642886433793</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -216,6 +217,7 @@
     <MESSAGE value="Version_1" />
     <MESSAGE value="Version_2" />
     <MESSAGE value="Version_3" />
-    <option name="LAST_COMMIT_MESSAGE" value="Version_3" />
+    <MESSAGE value="Version_4" />
+    <option name="LAST_COMMIT_MESSAGE" value="Version_4" />
   </component>
 </project>
