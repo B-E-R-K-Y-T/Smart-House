@@ -9,7 +9,7 @@
 # Бот для взаимодействия с сервером
 
 # ----------------------------------------------------------------------------------------------------------------------
-
+import csv
 import logging
 import base_client
 import bot_reg_mode
@@ -56,16 +56,20 @@ async def send_welcome(message: types.Message):
 @dp.message_handler(commands=['off', 'on'])
 async def request_to_server(message: types.Message):
     if await check_login_user(message):
-        try:
-            client = base_client.Client('127.0.0.1', 8888).get_client()
-            client.send(message.text.encode('utf-8'))
+        await send_text_to_server(message)
 
-            await message.answer('Запрос отправлен корректно.')
-        except Exception as e:
-            msg = f'Path to file with error : <{__file__}>\n\n<CLIENT>: {e}'
 
-            await message.answer(msg)
-            print(msg)
+@dp.message_handler(commands=['status'])
+async def get_status_sensor(message: types.Message):
+    if await check_login_user(message):
+        with open('commands.csv', 'r') as f:
+            # Создаем объект DictReader, указываем символ-разделитель ","
+            file_reader = csv.DictReader(f, delimiter=",")
+
+            for row in file_reader:
+                file_read = row['Command']
+
+            await message.answer('Статус датчика: {0}'.format(file_read[1:]))
 
 
 @dp.message_handler()
@@ -83,7 +87,7 @@ async def registration_or_authorization(message: types.Message, state: FSMContex
             await bot_reg_mode.set_user(data_user[0],
                                         message.from_user.id,
                                         data_user[1])
-            # await state.finish()
+            await state.finish()
 
 
 async def check_login_user(message: types.Message):
@@ -98,6 +102,19 @@ async def check_login_user(message: types.Message):
         return False
 
     return True
+
+
+async def send_text_to_server(message: types.Message):
+    try:
+        client = base_client.Client('127.0.0.1', 8888).get_client()
+        client.send(message.text.encode('utf-8'))
+
+        await message.answer('Запрос отправлен корректно.')
+    except Exception as e:
+        error_msg = f'Path to file with error : <{__file__}>\n\n<CLIENT>: {e}'
+
+        await message.answer(error_msg)
+        print(error_msg)
 
 
 if __name__ == '__main__':

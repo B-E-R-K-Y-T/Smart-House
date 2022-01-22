@@ -20,7 +20,7 @@ async def create_file_if_not_exists(loc_name_file):
     # Проверка на существование файла 'reg_user.csv'. Если его не будет - создать.
     if not os.path.exists(loc_name_file):
         with open(loc_name_file, 'w') as f:
-            names = ["Login", "Password", "ID"]
+            names = ["Login", "ID", "Password"]
             file_writer = csv.DictWriter(f, delimiter=",",
                                          lineterminator="\r", fieldnames=names)
 
