@@ -36,6 +36,18 @@ async def write_data_to_file(data, file):
         #                       names[1]: data.decode()})
 
 
+async def create_csv_file_if_not_exists(loc_name_file, names=None):
+    if names is None:
+        names = ["Login", "ID", "Password"]
+    # Проверка на существование файла 'reg_user.csv'. Если его не будет - создать.
+    if not os.path.exists(loc_name_file):
+        with open(loc_name_file, 'w') as f:
+            file_writer = csv.DictWriter(f, delimiter=",",
+                                         lineterminator="\r", fieldnames=names)
+
+            file_writer.writeheader()
+
+
 def count_file_in_folder(path, file_name):
 
     """

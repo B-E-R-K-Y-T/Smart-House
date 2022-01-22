@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4fb2ab44-0423-4c8c-82a0-a2cc95773445" name="Changes" comment="Version_2">
+    <list default="true" id="4fb2ab44-0423-4c8c-82a0-a2cc95773445" name="Changes" comment="Version_3">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/base_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/base_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bot_authorization_mode.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_authorization_mode.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bot_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bot_reg_mode.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_reg_mode.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/commands.csv" beforeDir="false" afterPath="$PROJECT_DIR$/commands.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_sensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_sensor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parse_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/parse_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users.csv" beforeDir="false" afterPath="$PROJECT_DIR$/users.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +46,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_sensor">
+  <component name="RunManager" selected="Python.bot_controller">
     <configuration name="base_server" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SHM" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -181,7 +184,21 @@
       <option name="project" value="LOCAL" />
       <updated>1642882461054</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Version_3">
+      <created>1642884107572</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1642884107572</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Version_3">
+      <created>1642884204247</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1642884204247</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -198,6 +215,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Version_1" />
     <MESSAGE value="Version_2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Version_2" />
+    <MESSAGE value="Version_3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Version_3" />
   </component>
 </project>

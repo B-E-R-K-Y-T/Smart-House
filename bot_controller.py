@@ -9,6 +9,7 @@
 # Бот для взаимодействия с сервером
 
 # ----------------------------------------------------------------------------------------------------------------------
+
 import csv
 import logging
 import base_client
@@ -44,13 +45,12 @@ dp = Dispatcher(bot, storage=storage)
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
-    if await check_login_user(message):
-        await check_login_user(message)
-
-        """
-        This handler will be called when user sends `/start` or `/help` command
-        """
-        await message.answer("Hi!\nI'm smart home mirea bot!")
+    # if await check_login_user(message):
+    #     await check_login_user(message)
+    """
+    This handler will be called when user sends `/start` or `/help` command
+    """
+    await message.answer("Hi!\nI'm smart home mirea bot!")
 
 
 @dp.message_handler(commands=['off', 'on'])

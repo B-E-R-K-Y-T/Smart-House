@@ -18,7 +18,11 @@ from shm_protocols import TCPServerProtocol
 
 class Server(TCPServerProtocol):
     def __init__(self, host, port, protocol='TCP'):
-        print(f'<SERVER>: Address: {host}; Port: {port}; Status: Activating...')
+        print(f'<SERVER>: '
+              f'Address: {host}; '
+              f'Port: {port}; '
+              f'Protocol: {protocol} '
+              f'Status: Activating...')
         asyncio.run(self.start_server(host, port, protocol))
 
     @staticmethod
@@ -26,10 +30,20 @@ class Server(TCPServerProtocol):
         loop = asyncio.get_running_loop()
         global server
 
-        if protocol == 'TCP':
-            server = await loop.create_server(
-                lambda: TCPServerProtocol(),
-                host, port)
+        protocols = {'MQTT': '',
+                     'AQMP': '',
+                     'COAP': '',
+                     'TCP': TCPServerProtocol(),
+                     'udp': '',
+                     'http': ''}
+
+        for prot in protocols.keys():
+            if protocol == prot and protocols[prot]:
+                server = await loop.create_server(
+                    lambda: protocols[prot],
+                    host, port)
+
+                break
         else:
             raise ExceptionErrorProtocol('I do not know such a protocol :(')
 
