@@ -4,11 +4,20 @@
 
 # ======================================================================================================================
 
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Тут будут лежать реализации протоколов.
+
+# ----------------------------------------------------------------------------------------------------------------------
+
 import asyncio
-import csv
+import parse_files
 import os
+import csv
 
 
+# TCP протокол
+# ----------------------------------------------------------------------------------------------------------------------
 class TCPServerProtocol(asyncio.Protocol):
     # Вызывается если соединение с сервером было
     # установлено!
@@ -24,7 +33,6 @@ class TCPServerProtocol(asyncio.Protocol):
     # The argument is a bytes object.
     def data_received(self, data):
         message = data.decode()
-
         # Проверка на существование файла 'commands.csv'. Если его не будет - создать.
         if not os.path.exists('commands.csv'):
             with open('commands.csv', 'w') as f:
@@ -56,3 +64,4 @@ class TCPServerProtocol(asyncio.Protocol):
     def connection_lost(self, exc):
         print('<SERVER>: Connection with {} is lost!'.format(self.transport.
                                                              get_extra_info('peername')))
+# ----------------------------------------------------------------------------------------------------------------------

@@ -4,6 +4,12 @@
 
 # ======================================================================================================================
 
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Апишка для авторизации пользователей
+
+# ----------------------------------------------------------------------------------------------------------------------
+
 import csv
 import os
 
@@ -14,7 +20,7 @@ async def create_file_if_not_exists(loc_name_file):
     # Проверка на существование файла 'reg_user.csv'. Если его не будет - создать.
     if not os.path.exists(loc_name_file):
         with open(loc_name_file, 'w') as f:
-            names = ["Login", "ID", "Password"]
+            names = ["Login", "Password", "ID"]
             file_writer = csv.DictWriter(f, delimiter=",",
                                          lineterminator="\r", fieldnames=names)
 
@@ -29,7 +35,6 @@ async def check_exist_user(user_id):
         file_reader = csv.DictReader(f, delimiter=",")
         # Считывание данных из CSV файла
         for row in file_reader:
-            print(user_id, row['ID'])
             if str(user_id) == str(row['ID']):
                 return True
         else:

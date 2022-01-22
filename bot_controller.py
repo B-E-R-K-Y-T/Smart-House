@@ -3,7 +3,13 @@
 # Author: BERKYT
 
 # ======================================================================================================================
-#
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Бот для взаимодействия с сервером
+
+# ----------------------------------------------------------------------------------------------------------------------
+
 import logging
 import base_client
 import bot_reg_mode
@@ -47,7 +53,7 @@ async def send_welcome(message: types.Message):
         await message.answer("Hi!\nI'm smart home mirea bot!")
 
 
-@dp.message_handler(commands=['off'])
+@dp.message_handler(commands=['off', 'on'])
 async def request_to_server(message: types.Message):
     if await check_login_user(message):
         try:
@@ -77,7 +83,7 @@ async def registration_or_authorization(message: types.Message, state: FSMContex
             await bot_reg_mode.set_user(data_user[0],
                                         message.from_user.id,
                                         data_user[1])
-            await state.finish()
+            # await state.finish()
 
 
 async def check_login_user(message: types.Message):
