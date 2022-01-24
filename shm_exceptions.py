@@ -21,7 +21,7 @@ class ExceptionErrorProtocol(Exception):
         if self.message:
             return 'ExceptionErrorProtocol: {0}.'.format(self.message)
         else:
-            return 'ExceptionErrorProtocol: Unknown exception type!'
+            return 'ExceptionErrorProtocol: Unknown protocol!'
 
 
 class ExceptionErrorCommand(Exception):
@@ -35,4 +35,4 @@ class ExceptionErrorCommand(Exception):
         if self.message:
             return 'ExceptionErrorProtocol: {0}.'.format(self.message)
         else:
-            return 'ExceptionErrorProtocol: Unknown exception type!'
+            return 'ExceptionErrorProtocol: Unknown command!'
