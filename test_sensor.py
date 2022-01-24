@@ -34,7 +34,7 @@ async def read_file():
                 file_read = row['Command']
 
             if file_read == '/on':
-                print('<SENSOR> Temperature = {0}'.format(random.randint(15, 25)))
+                print('<SENSOR> Temperature = {0}°C'.format(random.randint(15, 25)))
             elif file_read == '/off':
                 print("<SENSOR> I'm off!")
             else:
