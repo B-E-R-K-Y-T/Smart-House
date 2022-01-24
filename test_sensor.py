@@ -12,6 +12,7 @@ import time
 import base_client
 import csv
 import asyncio
+import random
 
 sensor = None
 
@@ -30,7 +31,8 @@ async def read_file():
             for row in file_reader:
                 file_read = row['Command']
 
-            print(file_read)
+            if file_read == '/on':
+                print(file_read)
 
         await asyncio.sleep(5)
 
