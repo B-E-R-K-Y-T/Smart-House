@@ -33,6 +33,6 @@ class ExceptionErrorCommand(Exception):
 
     def __str__(self):
         if self.message:
-            return 'ExceptionErrorProtocol: {0}.'.format(self.message)
+            return 'ExceptionErrorCommand: {0}.'.format(self.message)
         else:
-            return 'ExceptionErrorProtocol: Unknown command!'
+            return 'ExceptionErrorCommand: Unknown command!'
