@@ -14,6 +14,8 @@ import csv
 import asyncio
 import random
 
+from shm_exceptions import ExceptionErrorCommand
+
 sensor = None
 
 
@@ -32,7 +34,11 @@ async def read_file():
                 file_read = row['Command']
 
             if file_read == '/on':
-                print(file_read)
+                print('<SENSOR> Temperature = {0}'.format(random.randint(15, 25)))
+            elif file_read == '/off':
+                print("<SENSOR> I'm off!")
+            else:
+                raise ExceptionErrorCommand('I do not know such a command :(')
 
         await asyncio.sleep(5)
 
