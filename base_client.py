@@ -24,3 +24,14 @@ class Client:
     def get_client():
         global client
         return client
+
+    @staticmethod
+    def send_msg(data: str):
+        global client
+        client.send(data.encode('utf-8'))
+        print('Запрос отправлен.')
+
+    @staticmethod
+    def recv_msg(bufsize=1024):
+        global client
+        return client.recv(bufsize)

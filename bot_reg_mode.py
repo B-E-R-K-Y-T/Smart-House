@@ -12,13 +12,13 @@
 
 import csv
 
-from parse_files import create_csv_file_if_not_exists
+from parse_files import create_csv_file_if_not_exists_async
 
 name_file = 'users.csv'
 
 
 async def get_user(user_id):
-    await create_csv_file_if_not_exists(name_file)
+    await create_csv_file_if_not_exists_async(name_file)
 
     with open(name_file, 'r') as f:
         # Создаем объект DictReader, указываем символ-разделитель ","
@@ -32,7 +32,7 @@ async def get_user(user_id):
 
 
 async def set_user(login, user_id, password):
-    await create_csv_file_if_not_exists(name_file)
+    await create_csv_file_if_not_exists_async(name_file)
 
     # Запись запроса от бота на сервере в csv - файл
     with open(name_file, 'a') as f:
