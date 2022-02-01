@@ -48,6 +48,12 @@ async def create_csv_file_if_not_exists_async(loc_name_file, names=None):
             file_writer.writeheader()
 
 
+def create_file_if_not_exists(loc_name_file):
+    if not os.path.exists(loc_name_file):
+        with open(loc_name_file, 'w') as f:
+            f.write('')
+
+
 def create_csv_file_if_not_exists(loc_name_file, names=None):
     if names is None:
         names = ["Login", "ID", "Password"]
