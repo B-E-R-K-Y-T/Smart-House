@@ -168,7 +168,8 @@ def copying_file(path_to_file, sensor, name_file, new_name_file, flag=True):
 switch = input('Выберете режим: добавить(1) или создать(2) \n>>>')
 
 if switch == '2' or switch == 'создать':
-    set_smart_house_project()
-    add_files()
+    # set_smart_house_project()
+    # add_files()
+    pass
 elif switch == '1' or switch == 'добавить':
     add_files()
