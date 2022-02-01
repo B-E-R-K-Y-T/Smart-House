@@ -12,10 +12,8 @@
 
 import asyncio
 import parse_files
-import os
 import csv
 import base_client
-import websockets
 
 clients = []
 
@@ -39,7 +37,7 @@ class TCPServerProtocol(asyncio.Protocol):
     # The argument is a bytes object.
     def data_received(self, data):
         message = data.decode()
-        self.transport.write(('Echoed back: {}'.format(message)).encode())
+        # self.transport.write(('Echoed back: {}'.format(message)).encode())
         # data_client = websockets.recv()
 
         # print(data_client)

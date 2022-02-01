@@ -12,12 +12,10 @@
 
 import json
 import os
-
-
-# Разворачивает проект.
 import random
 
 
+# Разворачивает проект.
 def set_smart_house_project():
     with open('code.json', 'r') as js_f:
         dict_json = json.load(js_f)
@@ -56,16 +54,20 @@ def add_files():
         for i in range(1, quality + 1):
             sensor = sensor_copy + '_' + str(i)
 
+            # Создание неповторяющихся портов.
+            while True:
+                port = random.randint(1000, 50_000)
+
+                if list_ports == [] or list_ports[-1] != port:
+                    list_ports.append(port)
+                    break
+
             # Проверка на существование директории.
             if not os.path.exists(f'{path_to_file}/{sensor}'):
                 os.mkdir(f'{path_to_file}/{sensor}')
 
-
-
             # Код сенсора.
             with open(f'{path_to_file}/{sensor}/{sensor}.py', 'w') as f:
-                port = random.randint(1000, 50_000)
-                list_ports.append(port)
 
                 f.write(
                     f'''# ======================================================================================================================
@@ -99,7 +101,7 @@ async def working_sensor():
     while True:
         try:
             if flag == '/on':
-                print('<SENSOR> {sensor} '+ str(random.randint(15, 25)) +'°C')
+                print('<SENSOR> {sensor} ' + str(random.randint(15, 25)) + '°C')
             elif flag == '/off':
                 print('<SENSOR> {sensor} Я сплю!')
             else:
@@ -120,15 +122,15 @@ if __name__ == '__main__':
 '''
                     )
 
-            # БЛЯТСКОЕ ГОВНИЩЕ СУКА НАХУЙ БЛЯТЬ ЭТО ГОВНО СУКА НО МНЕ ПОХУЙ УЖЕ(Это порты генерятся.)
-            with open(f'ports', 'w') as f:
-                for port_ in list_ports:
-                    f.write(str(port_) + ',')
-
             # Сборка докер - файлa.
             copying_file(path_to_file, sensor, 'Dockerfile', 'Docker_origin', False)
             # Сборка base_client(ЭТО КОСТЫЛЬ ЕБАНЫЙ СУКА)
             copying_file(path_to_file, sensor, 'base_client.py', 'base_client.py')
+
+    # БЛЯТСКОЕ ГОВНИЩЕ СУКА НАХУЙ БЛЯТЬ ЭТО ГОВНО СУКА НО МНЕ ПОХУЙ УЖЕ(Это порты генерятся.)
+    with open(f'ports', 'a') as f:
+        for port_ in list_ports:
+            f.write(str(port_) + ',')
 
 
 # Эта функция работает как обычный replace, только
