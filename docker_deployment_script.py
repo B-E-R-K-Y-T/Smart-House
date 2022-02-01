@@ -44,7 +44,7 @@ def add_files():
     if not os.path.exists(f'{path_to_file}'):
         os.mkdir(f'{path_to_file}')
 
-    list_ports = []
+    list_ports = [0]
 
     # Сборка контейнера.
     for sensor in sensors:
@@ -53,14 +53,8 @@ def add_files():
         # Сборка сенсора.
         for i in range(1, quality + 1):
             sensor = sensor_copy + '_' + str(i)
-
-            # Создание неповторяющихся портов.
-            while True:
-                port = random.randint(1000, 50_000)
-
-                if list_ports == [] or list_ports[-1] != port:
-                    list_ports.append(port)
-                    break
+            port = random.randint(0, 50_000)
+            list_ports.append(port)
 
             # Проверка на существование директории.
             if not os.path.exists(f'{path_to_file}/{sensor}'):
@@ -88,7 +82,7 @@ def listen_main_server():
     import socket
     global flag
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # создаем сокет
-    sock.bind(('', {port}))  # связываем сокет с портом, где он будет ожидать сообщения
+    sock.bind(('0.0.0.0', {port}))  # связываем сокет с портом, где он будет ожидать сообщения
     sock.listen(1)  # указываем сколько может сокет принимать соединений
     while True:
         conn, addr = sock.accept()  # начинаем принимать соединения
