@@ -121,7 +121,7 @@ async def send_text_to_server(message: types.Message):
 
         await message.answer('Запрос отправлен корректно.')
     except Exception as e:
-        error_msg = f'Path to file with error : <{__file__}>\n\n<CLIENT>: {e}'
+        error_msg = f'Path to file with error: <{__file__}>\n\n<CLIENT>: {e}'
 
         await message.answer(error_msg)
         print(error_msg)

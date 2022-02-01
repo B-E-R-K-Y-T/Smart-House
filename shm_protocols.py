@@ -50,7 +50,7 @@ class TCPServerProtocol(asyncio.Protocol):
                     client = base_client.Client('127.0.0.1', int(port)).get_client()
                     client.send(message.encode('utf-8'))
                 except Exception as e:
-                    error_msg = f'Path to file with error : <{__file__}>\n\n<SERVER>: {e}'
+                    error_msg = f'Path to file with error: <{__file__}>\n\n<SERVER>: {e}'
                     print(error_msg)
                     continue
 
