@@ -171,6 +171,5 @@ if switch == '2' or switch == 'создать':
     # set_smart_house_project()
     # add_files()
     print('Функция временно вырезана.')
-    pass
 elif switch == '1' or switch == 'добавить':
     add_files()
