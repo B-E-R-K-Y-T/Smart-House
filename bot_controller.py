@@ -96,7 +96,9 @@ async def registration_or_authorization(message: types.Message, state: FSMContex
             await bot_reg_mode.set_user(data_user[0],
                                         message.from_user.id,
                                         data_user[1])
-            await message.answer('Вы успешно зарегистрировались!')
+
+            await message.answer(f'Вы успешно зарегистрировались!\n\n'
+                                 f'Ваш логин: {data_user[0]} и пароль: {data_user[1]}')
             await state.finish()
 
 
