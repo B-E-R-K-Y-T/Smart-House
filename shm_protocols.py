@@ -49,7 +49,9 @@ class TCPServerProtocol(asyncio.Protocol):
                 try:
                     client = base_client.Client('127.0.0.1', int(port)).get_client()
                     client.send(message.encode('utf-8'))
-                except:
+                except Exception as e:
+                    error_msg = f'Path to file with error : <{__file__}>\n\n<SERVER>: {e}'
+                    print(error_msg)
                     continue
 
         # Проверка на существование файла 'commands.csv'. Если его не будет - создать.
