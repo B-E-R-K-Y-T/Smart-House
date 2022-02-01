@@ -36,13 +36,15 @@ class TCPServerProtocol(asyncio.Protocol):
     # Called when some data is received.
     # The argument is a bytes object.
     def data_received(self, data):
+        print(f'Path to file with: <{__file__}>\n\n<SERVER>: Packages received.')
+
         message = data.decode()
         # self.transport.write(('Echoed back: {}'.format(message)).encode())
         # data_client = websockets.recv()
 
         # print(data_client)
 
-        with open('ports', 'r') as f:
+        with open('ports.txt', 'r') as f:
             for port in str(f.read()).split(','):
                 print('message = ' + message)
 

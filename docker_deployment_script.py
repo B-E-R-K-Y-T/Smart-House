@@ -122,7 +122,7 @@ if __name__ == '__main__':
             copying_file(path_to_file, sensor, 'base_client.py', 'base_client.py')
 
     # БЛЯТСКОЕ ГОВНИЩЕ СУКА НАХУЙ БЛЯТЬ ЭТО ГОВНО СУКА НО МНЕ ПОХУЙ УЖЕ(Это порты генерятся.)
-    with open(f'ports', 'a') as f:
+    with open(f'ports.txt', 'a') as f:
         for port_ in list_ports:
             f.write(str(port_) + ',')
 
