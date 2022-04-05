@@ -148,18 +148,4 @@ def main():
 
 
 if __name__ == '__main__':
-    def get_replace_dict():
-        quality_operators = converting_types(input('\tВведите кол-во операторов которые меняем \n\t>>>'), int)
-        dict_operators = {
-
-        }
-
-        for _ in range(quality_operators):
-            dict_operators[input('\t\tЧто заменить? \n\t\t>>>')] = input('\t\tНа что заменить? \n\t\t>>>')
-
-        return dict_operators
-
-    for key, value in enumerate({'docker_file': (
-        input('Введите путь до базового докер файла \n>>>'), get_replace_dict(), 'Docker.txt')}.items()):
-        print(key, value)
-    # main()
+    main()
