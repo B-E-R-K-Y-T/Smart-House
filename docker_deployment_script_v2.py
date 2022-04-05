@@ -125,6 +125,8 @@ def add_files():
 
     print('Paths: ', dict_paths)
     create_docker_files(dict_paths)
+    # ДОДЕЛАТЬ ЭТУ ФУНКЦИЮ И ВСЕ БУДЕТ ГОТОВО!
+    # create_sensor_files()
 
 
 def main():
@@ -149,3 +151,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# 0 ('docker_file', ('Введите путь до базового докер файла ', {'Что заменить? ': 'На что заменить? '}, 'Docker.txt'))
