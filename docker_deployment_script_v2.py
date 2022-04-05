@@ -15,7 +15,7 @@ import parse_files
 import shm_exceptions
 
 
-def create_path_if_not_found(path_to_file):
+def create_path_if_not_found(path_to_file: str) -> str:
     if not os.path.exists(f'{path_to_file}'):
         os.mkdir(f'{path_to_file}')
 
@@ -33,7 +33,7 @@ def converting_types(var, class_type):
             return var
 
 
-def checking_exist_file(path_to_file):
+def checking_exist_file(path_to_file: str) -> str:
     if not os.path.exists(f'{path_to_file}'):
         raise FileExistsError(f'Path: "{path_to_file}" does not exist!')
     else:
@@ -41,7 +41,7 @@ def checking_exist_file(path_to_file):
 
 
 # Разворачивает проект.
-def set_smart_house_project():
+def set_smart_house_project() -> None:
     with open('code.json', 'r') as js_f:
         dict_json = json.load(js_f)
 
@@ -65,13 +65,14 @@ def interpreter_file(path_to_file: str, path_to_save: str, dict_operators: dict,
             write_file.write(replace_dict(dict_operators, read_file))
 
 
-def reading_file(path_to_file):
+def reading_file(path_to_file: str) -> str:
     with open(path_to_file, 'r') as read_file:
         for line in read_file:
             yield line
 
 
-def create_docker_files(dict_paths_to_docker_file):
+# TODO: Переписать эту функцию, чтобы она выглядела по-человечески.
+def create_docker_files(dict_paths_to_docker_file: dict) -> None:
     for key, value in dict_paths_to_docker_file.items():
         if str(key).lower().startswith('docker'):
             interpreter_file(value[0], dict_paths_to_docker_file['path_to_save'],
@@ -79,7 +80,8 @@ def create_docker_files(dict_paths_to_docker_file):
                              value[2], )
 
 
-def create_sensor_files(dict_paths_to_sensor_file):
+# TODO: Переписать эту функцию, чтобы она выглядела по-человечески.
+def create_sensor_files(dict_paths_to_sensor_file: dict) -> None:
     for offset, tuple_value in enumerate(dict_paths_to_sensor_file.items()):
         key = tuple_value[0]
         value = tuple_value[1]
@@ -90,8 +92,8 @@ def create_sensor_files(dict_paths_to_sensor_file):
                              value[2], )
 
 
-def add_files():
-    def get_replace_dict():
+def add_files() -> None:
+    def get_replace_dict() -> dict:
         quality_operators = converting_types(input('\tВведите кол-во операторов которые меняем \n\t>>>'), int)
         dict_operators = {
 
@@ -112,20 +114,23 @@ def add_files():
     quality = converting_types(input('Введите кол-во сенсоров \n>>>'), int)
 
     dict_paths['docker_file'] = (checking_exist_file(
-        input('Введите путь до базового докер файла \n>>>')), get_replace_dict(), 'Docker.txt')
+        input('Введите путь до базового докер файла \n>>>')), get_replace_dict(),
+        input('Введите название файла \n>>>'))
 
     dict_paths['docker_file_compose'] = (checking_exist_file(
-        input('Введите путь до базового докер к. файла \n>>>')), get_replace_dict(), 'Docker_compose.txt')
+        input('Введите путь до базового докер к. файла \n>>>')), get_replace_dict(),
+        input('Введите название файла \n>>>'))
 
     dict_paths['sensor_file_base'] = (checking_exist_file(
-        input('Введите путь до базового файла сенсора \n>>>')), get_replace_dict(), 'Sensor_.txt')
+        input('Введите путь до базового файла сенсора \n>>>')), get_replace_dict(),
+        input('Введите название файла \n>>>'))
 
     dict_paths['path_to_save'] = create_path_if_not_found(
         input('Введите путь сохранения файлов \n>>>'))
 
     print('Paths: ', dict_paths)
     create_docker_files(dict_paths)
-    # ДОДЕЛАТЬ ЭТУ ФУНКЦИЮ И ВСЕ БУДЕТ ГОТОВО!
+    # TODO: ДОДЕЛАТЬ ЭТУ ФУНКЦИЮ И ВСЕ БУДЕТ ГОТОВО!
     # create_sensor_files()
 
 

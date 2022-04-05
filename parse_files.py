@@ -15,7 +15,7 @@ import csv
 import codecs
 
 
-# ЭТА ФУНКЦИЯ НЕ РАБОТАЕТ. ДОДЕЛАТЬ ПОТОМ!
+# TODO: ЭТА ФУНКЦИЯ НЕ РАБОТАЕТ. ДОДЕЛАТЬ ПОТОМ!
 async def write_data_to_file(data, file):
     # Проверка на существование файла 'commands.csv'. Если его не будет - создать.
     if not os.path.exists(file):

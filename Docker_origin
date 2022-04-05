@@ -1,136 +1,27 @@
+======================================================================================================================
+
+# Project: Smart Home
+# Authors: Тимофей Кондаков, Александр Хаметзянов, Полина Зайцева. 
+
 # ======================================================================================================================
 
-# Author: BERKYT
 
-# ======================================================================================================================
+FROM python:3.9-slim as builder
 
-# ----------------------------------------------------------------------------------------------------------------------
+# Директория скрипта
+WORKDIR /SENSOR
 
-# Скрипт для развертывания проекта.
+# Переменные окружения python
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# ----------------------------------------------------------------------------------------------------------------------
-import json
-import os
-import parse_files
-import shm_exceptions
+FROM python:3.9-slim
 
+# Директория скрипта
+WORKDIR /SENSOR
 
-def create_path_if_not_found(path_to_file):
-    if not os.path.exists(f'{path_to_file}'):
-        os.mkdir(f'{path_to_file}')
+COPY --from=builder /SENSOR .
 
-        return path_to_file
+ADD SENSOR.py /SENSOR
 
-
-def converting_types(var, class_type):
-    while True:
-        try:
-            var = class_type(var)
-        except ValueError as e:
-            var = input(f'Ошибка: {e}\nПопробуйте снова! \n>>>')
-            continue
-        else:
-            return var
-
-
-def checking_exist_file(path_to_file):
-    if not os.path.exists(f'{path_to_file}'):
-        raise FileExistsError(f'Path: "{path_to_file}" does not exist!')
-    else:
-        return path_to_file
-
-
-# Разворачивает проект.
-def set_smart_house_project():
-    with open('code.json', 'r') as js_f:
-        dict_json = json.load(js_f)
-
-    for file in dict_json.keys():
-        with open(file, 'w') as f:
-            f.write(dict_json[file])
-
-
-# Эта функция работает как обычный replace, только
-# позволяет заменять сразу несколько слов в строке
-def replace_dict(dict_words: dict, line: str) -> str:
-    for old_word, new_word in dict_words.items():
-        line = line.replace(old_word, new_word)
-
-    return line
-
-
-def interpreter_file(path_to_file: str, path_to_save: str, dict_operators: dict, name_file: str) -> None:
-    with open(f'{path_to_save}/{name_file}', 'w') as write_file:
-        for read_file in reading_file(path_to_file):
-            write_file.write(replace_dict(dict_operators, read_file))
-
-
-def reading_file(path_to_file):
-    with open(path_to_file, 'r') as read_file:
-        for line in read_file:
-            yield line
-
-
-def create_docker_files(dict_paths_to_docker_file):
-    for key, value in dict_paths_to_docker_file.items():
-        if str(key).startswith('docker'):
-            interpreter_file(value[0], dict_paths_to_docker_file['path_to_save'],
-                             value[1],
-                             value[2], )
-
-
-def create_sensor_files():
-    pass
-
-
-def add_files():
-    dict_paths = {
-
-    }
-
-    sensors = input('Введите типы сенсоров через запятую \n>>>')
-    sensors = sensors.replace(' ', '').split(',')
-    quality = converting_types(input('Введите кол-во сенсоров \n>>>'), int)
-
-    dict_paths['docker_file'] = (checking_exist_file(
-        input('Введите путь до базового докер файла \n>>>')), {
-        'тут будет словарь операторов': 1
-    }, 'Docker.txt')
-
-    dict_paths['docker_file_compose'] = (checking_exist_file(
-        input('Введите путь до базового докер к. файла \n>>>')), {
-        'тут будет словарь операторов': 1
-    }, 'Docker_compose.txt')
-
-    dict_paths['sensor_file_base'] = (checking_exist_file(
-        input('Введите путь до базового файла сенсора \n>>>')), {
-        'тут будет словарь операторов': 1
-    })
-
-    dict_paths['path_to_save'] = create_path_if_not_found(
-        input('Введите путь сохранения файлов \n>>>'))
-
-    print('Paths: ', dict_paths)
-    create_docker_files(dict_paths)
-
-
-def main():
-    # Развертывание проекта.
-    while True:
-        switch = input('Выберете режим: добавить(1), создать(2) или выйти(-1) \n>>>')
-        switch = switch.lower()
-
-        if switch == '2' or switch == 'создать':
-            # set_smart_house_project()
-            # add_files()
-            print('Функция временно вырезана.')
-        elif switch == '1' or switch == 'добавить':
-            add_files()
-        elif switch == '-1' or switch == 'выход':
-            break
-        else:
-            print('Вы ввели несуществующую команду! Попробуйте ещё раз: \n')
-
-
-if __name__ == '__main__':
-    main()
+EXPOSE 1234
