@@ -73,17 +73,36 @@ def reading_file(path_to_file):
 
 def create_docker_files(dict_paths_to_docker_file):
     for key, value in dict_paths_to_docker_file.items():
-        if str(key).startswith('docker'):
+        if str(key).lower().startswith('docker'):
             interpreter_file(value[0], dict_paths_to_docker_file['path_to_save'],
                              value[1],
                              value[2], )
 
 
-def create_sensor_files():
-    pass
+def create_sensor_files(dict_paths_to_sensor_file):
+    for offset, tuple_value in enumerate(dict_paths_to_sensor_file.items()):
+        key = tuple_value[0]
+        value = tuple_value[1]
+
+        if str(key).lower().startswith('sensor'):
+            interpreter_file(value[0], dict_paths_to_sensor_file['path_to_save'],
+                             value[1],
+                             value[2], )
 
 
 def add_files():
+    def get_replace_dict():
+        quality_operators = converting_types(input('\tВведите кол-во операторов которые меняем \n\t>>>'), int)
+        dict_operators = {
+
+        }
+
+        for _ in range(quality_operators):
+            old_operator = input('\t\tЧто заменить? \n\t\t>>>')
+            dict_operators[old_operator] = input('\t\tНа что заменить? \n\t\t>>>')
+
+        return dict_operators
+
     dict_paths = {
 
     }
@@ -93,19 +112,13 @@ def add_files():
     quality = converting_types(input('Введите кол-во сенсоров \n>>>'), int)
 
     dict_paths['docker_file'] = (checking_exist_file(
-        input('Введите путь до базового докер файла \n>>>')), {
-        'тут будет словарь операторов': 1
-    }, 'Docker.txt')
+        input('Введите путь до базового докер файла \n>>>')), get_replace_dict(), 'Docker.txt')
 
     dict_paths['docker_file_compose'] = (checking_exist_file(
-        input('Введите путь до базового докер к. файла \n>>>')), {
-        'тут будет словарь операторов': 1
-    }, 'Docker_compose.txt')
+        input('Введите путь до базового докер к. файла \n>>>')), get_replace_dict(), 'Docker_compose.txt')
 
     dict_paths['sensor_file_base'] = (checking_exist_file(
-        input('Введите путь до базового файла сенсора \n>>>')), {
-        'тут будет словарь операторов': 1
-    })
+        input('Введите путь до базового файла сенсора \n>>>')), get_replace_dict(), 'Sensor_.txt')
 
     dict_paths['path_to_save'] = create_path_if_not_found(
         input('Введите путь сохранения файлов \n>>>'))
@@ -121,7 +134,9 @@ def main():
         switch = switch.lower()
 
         if switch == '2' or switch == 'создать':
+            # print('Разворачиваю проект...')
             # set_smart_house_project()
+            # print('Создание первичных датчиков: ')
             # add_files()
             print('Функция временно вырезана.')
         elif switch == '1' or switch == 'добавить':
@@ -133,4 +148,18 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    def get_replace_dict():
+        quality_operators = converting_types(input('\tВведите кол-во операторов которые меняем \n\t>>>'), int)
+        dict_operators = {
+
+        }
+
+        for _ in range(quality_operators):
+            dict_operators[input('\t\tЧто заменить? \n\t\t>>>')] = input('\t\tНа что заменить? \n\t\t>>>')
+
+        return dict_operators
+
+    for key, value in enumerate({'docker_file': (
+        input('Введите путь до базового докер файла \n>>>'), get_replace_dict(), 'Docker.txt')}.items()):
+        print(key, value)
+    # main()

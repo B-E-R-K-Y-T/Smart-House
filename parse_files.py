@@ -164,8 +164,7 @@ def del_space(path):
     """
 
     with codecs.open(path, 'r', 'utf_8') as f:
-        for _ in range(count_lines_in_file(path)):
-            line = str(f.readline())
+        for line in f:
             if line.isspace():
                 continue
             else:
