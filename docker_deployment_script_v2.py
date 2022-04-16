@@ -11,10 +11,12 @@
 # ----------------------------------------------------------------------------------------------------------------------
 import json
 import os
+import static_type
 import parse_files
 import shm_exceptions
 
 
+@static_type.decorate_static_type
 def create_path_if_not_found(path_to_file: str) -> str:
     if not os.path.exists(f'{path_to_file}'):
         os.mkdir(f'{path_to_file}')
@@ -33,6 +35,7 @@ def converting_types(var, class_type):
             return var
 
 
+@static_type.decorate_static_type
 def checking_exist_file(path_to_file: str) -> str:
     if not os.path.exists(f'{path_to_file}'):
         raise FileExistsError(f'Path: "{path_to_file}" does not exist!')
@@ -52,6 +55,7 @@ def set_smart_house_project() -> None:
 
 # Эта функция работает как обычный replace, только
 # позволяет заменять сразу несколько слов в строке
+@static_type.decorate_static_type
 def replace_dict(dict_words: dict, line: str) -> str:
     for old_word, new_word in dict_words.items():
         line = line.replace(old_word, new_word)
@@ -59,12 +63,14 @@ def replace_dict(dict_words: dict, line: str) -> str:
     return line
 
 
+@static_type.decorate_static_type
 def interpreter_file(path_to_file: str, path_to_save: str, dict_operators: dict, name_file: str) -> None:
     with open(f'{path_to_save}/{name_file}', 'w') as write_file:
         for read_file in reading_file(path_to_file):
             write_file.write(replace_dict(dict_operators, read_file))
 
 
+@static_type.decorate_static_type
 def reading_file(path_to_file: str) -> str:
     with open(path_to_file, 'r') as read_file:
         for line in read_file:
@@ -72,6 +78,7 @@ def reading_file(path_to_file: str) -> str:
 
 
 # TODO: Переписать эту функцию, чтобы она выглядела по-человечески.
+@static_type.decorate_static_type
 def create_docker_files(dict_paths_to_docker_file: dict) -> None:
     for key, value in dict_paths_to_docker_file.items():
         if str(key).lower().startswith('docker'):
@@ -81,15 +88,12 @@ def create_docker_files(dict_paths_to_docker_file: dict) -> None:
 
 
 # TODO: Переписать эту функцию, чтобы она выглядела по-человечески.
-def create_sensor_files(dict_paths_to_sensor_file: dict) -> None:
-    for offset, tuple_value in enumerate(dict_paths_to_sensor_file.items()):
-        key = tuple_value[0]
-        value = tuple_value[1]
+def create_sensor_files(dict_paths: dict) -> None:
 
-        if str(key).lower().startswith('sensor'):
-            interpreter_file(value[0], dict_paths_to_sensor_file['path_to_save'],
-                             value[1],
-                             value[2], )
+    interpreter_file(dict_paths['sensor_file_base']['path_to_base_sensor'],
+                     dict_paths['path_to_save'],
+                     dict_paths['sensor_file_base']['dict_replace'],
+                     dict_paths['sensor_file_base']['name_file'])
 
 
 def add_files() -> None:
@@ -121,9 +125,9 @@ def add_files() -> None:
         input('Введите путь до базового докер к. файла \n>>>')), get_replace_dict(),
         input('Введите название файла \n>>>'))
 
-    dict_paths['sensor_file_base'] = (checking_exist_file(
-        input('Введите путь до базового файла сенсора \n>>>')), get_replace_dict(),
-        input('Введите название файла \n>>>'))
+    dict_paths['sensor_file_base'] = {'path_to_base_sensor': checking_exist_file(
+        input('Введите путь до базового файла сенсора \n>>>')), 'dict_replace': get_replace_dict(),
+        'name_file': input('Введите название файла \n>>>')}
 
     dict_paths['path_to_save'] = create_path_if_not_found(
         input('Введите путь сохранения файлов \n>>>'))
@@ -131,7 +135,12 @@ def add_files() -> None:
     print('Paths: ', dict_paths)
     create_docker_files(dict_paths)
     # TODO: ДОДЕЛАТЬ ЭТУ ФУНКЦИЮ И ВСЕ БУДЕТ ГОТОВО!
-    # create_sensor_files()
+    print(dict_paths['sensor_file_base'])
+
+
+    # create_sensor_files(dict_paths['sensor_file_base'][0],
+    #                     dict_paths['sensor_file_base'][1],
+    #                     dict_paths['sensor_file_base'][2])
 
 
 def main():
