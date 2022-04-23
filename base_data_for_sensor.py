@@ -7,6 +7,7 @@
 # Температура, открытие, закрытие открытие дверей, вкл выкл свет, в случае протечки: замыкание или размыкание
 # Статус: онлайн и оффлайн,
 # уровень света, открыто или закрыто окно, время суток, время года.
+# TODO: Добавить кондиционеры, печку
 
 import random
 import shm_exceptions
@@ -21,7 +22,7 @@ _PASS = 'PASS'
 class DataForSensor:
     def __init__(self, *, name_sensor, status_network, name_room,
                  temperature='10', status_door_switch='close', status_light_switch='off',
-                 status_window_switch='close', status_light_level_switch='0'):
+                 status_window_switch='close', status_light_level_switch='0', status_water=False):
         self.name_sensor = name_sensor
         self.status_network = status_network
         self.name_room = name_room
@@ -30,6 +31,7 @@ class DataForSensor:
         self.status_light_switch = status_light_switch
         self.status_window_switch = status_window_switch
         self.status_light_level_switch = status_light_level_switch
+        self.status_water = status_water
         self._check_status_network()
 
     def _check_status_network(self):
@@ -64,6 +66,12 @@ class DataForSensor:
         else:
             return self._get_status_network()['info']
 
+    def get_water_in_room(self):
+        if self._get_status_network()['bool']:
+            return self.status_water
+        else:
+            return self._get_status_network()['info']
+
     def get_temperature(self):
         """
             Возвращает температуру в комнате в зависимости от времени суток.
@@ -84,7 +92,7 @@ class DataForSensor:
                     temperature = time_range_with_temperature[key]
                     break
 
-            return f'Температура в комнате "{self.get_name_room()}" = {temperature + koef_temperature} градусов.'
+            return temperature + koef_temperature
         else:
             return self._get_status_network()['info']
 
@@ -122,8 +130,7 @@ class DataForSensor:
                 if 'on' in item or 'open' in item:
                     result_list.append(random.randint(10, 30))
 
-            return 'Уровень освещенности в комнате {name_room} = {level_light}%'.format(level_light=sum(result_list),
-                                                                                        name_room=self.get_name_room())
+            return sum(result_list)
         else:
             return self._get_status_network()['info']
 
@@ -145,6 +152,12 @@ class DataForSensor:
     def set_name_room(self, name_room):
         if self._get_status_network()['bool']:
             self.name_room = name_room
+        else:
+            print(self._get_status_network()['info'])
+
+    def set_water_in_room(self, status_water):
+        if self._get_status_network()['bool']:
+            self.status_water = status_water
         else:
             print(self._get_status_network()['info'])
 
@@ -178,3 +191,8 @@ if __name__ == '__main__':
     print(dfs.get_status_light_switch())
     print(dfs.get_status_window_switch())
     print(dfs.get_status_online())
+
+    dfs.set_status_network('online')
+    dfs.set_status_door_switch('open')
+    dfs.set_status_light_switch('on')
+    print(dfs.get_light_level())

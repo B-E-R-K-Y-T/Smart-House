@@ -13,6 +13,7 @@
 import os
 import csv
 import codecs
+import json
 
 
 # TODO: ЭТА ФУНКЦИЯ НЕ РАБОТАЕТ. ДОДЕЛАТЬ ПОТОМ!
@@ -46,6 +47,13 @@ async def create_csv_file_if_not_exists_async(loc_name_file, names=None):
                                          lineterminator="\r", fieldnames=names)
 
             file_writer.writeheader()
+
+
+def read_json_file(path_to_file: str) -> None:
+    with open(path_to_file) as json_file:
+        data = json.load(json_file)
+        for key, value in data.items():
+            yield key, value
 
 
 def create_file_if_not_exists(loc_name_file):

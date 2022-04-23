@@ -1,0 +1,32 @@
+{
+  "temperature_sensor": {
+    "command": "gt",
+    "to_do": "Температура в комнате \"{get_name_room}\" = {get_temperature} градусов.",
+    "description": "Эта команда нужна, чтобы узнать температуру в комнате."
+  },
+  "light_sensor": {
+    "command": "gll",
+    "to_do": "Уровень освещенности в комнате {get_name_room} = {get_light_level}%",
+    "description": "Эта команда нужна, чтобы узнать уровень освещённости в комнате."
+  },
+  "switch_door_sensor": {
+    "command": "PASS",
+    "to_do": "PASS",
+    "description": "PASS"
+  },
+  "switch_window_sensor": {
+    "command": "PASS",
+    "to_do": "PASS",
+    "description": "PASS"
+  },
+  "switch_light_sensor": {
+    "command": "PASS",
+    "to_do": "PASS",
+    "description": "PASS"
+  },
+  "water_sensor": {
+    "command": "PASS",
+    "to_do": "PASS",
+    "description": "PASS"
+  }
+}

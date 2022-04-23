@@ -25,6 +25,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 from aiogram import Bot, Dispatcher, executor, types
 from config import TOKEN
+from parse_files import read_json_file
 
 API_TOKEN = TOKEN
 
@@ -47,6 +48,10 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
 
+def get_list_command():
+    return [value['command'] for _, value in read_json_file('type_sensors.json')]
+
+
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
     # if await check_login_user(message):
@@ -57,7 +62,7 @@ async def send_welcome(message: types.Message):
     await message.answer("Hi!\nI'm smart home mirea bot!")
 
 
-@dp.message_handler(commands=['off', 'on'])
+@dp.message_handler(commands=get_list_command())
 async def request_to_server(message: types.Message):
     if await check_login_user(message):
         await send_text_to_server(message)
