@@ -1,32 +1,52 @@
 {
   "temperature_sensor": {
-    "command": "gt",
-    "to_do": "Температура в комнате \"{get_name_room}\" = {get_temperature} градусов.",
-    "description": "Эта команда нужна, чтобы узнать температуру в комнате."
+    "get_temperature": {
+      "to_do": "Температура в комнате \"{get_name_room}\" = {get_temperature} градусов.",
+      "description": "Эта команда нужна, чтобы узнать температуру в комнате."
+    },
+    "get_now_date_and_time": {
+      "to_do": "Время сейчас: {get_now_date_and_time}",
+      "description": "Эта команда нужна, чтобы узнать температуру в комнате."
+    },
+    "f_set_status_network_offline": {
+      "to_do": "set_status_network",
+      "args": "offline",
+      "description": "PASS"
+    },
+    "f_set_status_network_online": {
+      "to_do": "set_status_network",
+      "args": "online",
+      "description": "PASS"
+    }
   },
   "light_sensor": {
-    "command": "gll",
-    "to_do": "Уровень освещенности в комнате {get_name_room} = {get_light_level}%",
-    "description": "Эта команда нужна, чтобы узнать уровень освещённости в комнате."
+    "pass": {
+      "to_do": "PASS",
+      "description": "PASS"
+    }
   },
   "switch_door_sensor": {
-    "command": "PASS",
-    "to_do": "PASS",
-    "description": "PASS"
+    "pass": {
+      "to_do": "PASS",
+      "description": "PASS"
+    }
   },
   "switch_window_sensor": {
-    "command": "PASS",
-    "to_do": "PASS",
-    "description": "PASS"
+    "pass": {
+      "to_do": "PASS",
+      "description": "PASS"
+    }
   },
   "switch_light_sensor": {
-    "command": "PASS",
-    "to_do": "PASS",
-    "description": "PASS"
+    "pass": {
+      "to_do": "PASS",
+      "description": "PASS"
+    }
   },
   "water_sensor": {
-    "command": "PASS",
-    "to_do": "PASS",
-    "description": "PASS"
+    "pass": {
+      "to_do": "PASS",
+      "description": "PASS"
+    }
   }
 }

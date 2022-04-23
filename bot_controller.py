@@ -49,7 +49,12 @@ dp = Dispatcher(bot, storage=storage)
 
 
 def get_list_command():
-    return [value['command'] for _, value in read_json_file('type_sensors.json')]
+    result = []
+    for _, commands in read_json_file('type_sensors.json'):
+        for key in commands:
+            result.append(key)
+
+    return set(result)
 
 
 @dp.message_handler(commands=['start', 'help'])
