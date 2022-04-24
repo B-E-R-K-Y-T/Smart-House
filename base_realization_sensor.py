@@ -3,8 +3,11 @@
 # Author: BERKYT
 
 # ======================================================================================================================
-
 """
+УЗНАЕТ АЙПИШНИК УСТРОЙСТВА.
+import socket
+print(socket.gethostbyname(socket.gethostname()))
+
 Типы сенсоров:
     1) Термо-датчик
     2) Датчик освещения
@@ -15,6 +18,7 @@
 import asyncio
 import re
 
+import shm_exceptions
 from parse_files import read_json_file
 from shm_exceptions import ExceptionTypeSensor
 from threading import Thread
@@ -82,12 +86,15 @@ async def working_sensor(arg_commands: dict) -> None:
                     # Надеюсь, что понятно описал...
                     print(
                         replace_dict(
-                            {key: '' for key in get_functions_from_request(to_do)},
-                            to_do)
-                        .format(*[func() for func in function_list]))
+                            {key: '' for key in get_functions_from_request(to_do)}, to_do).format(
+                                *[func() for func in function_list])
+                    )
                     break
         else:
-            print(f'Такой "{message_for_sensor}" команды нет!')
+            if message_for_sensor is not None:
+                print(f'Такой "{message_for_sensor}" команды нет!')
+                global message_for_sensor
+                message_for_sensor = None
 
         await asyncio.sleep(1)
 
@@ -96,10 +103,10 @@ async def working_sensor(arg_commands: dict) -> None:
 TYPE_SENSOR = 'temperature_sensor'.lower()
 # Указать имя сенсора через форматирование файла.
 NAME_SENSOR = '__NAME_SENSOR__'.lower()
-# Объект сенсора.
-SENSOR = Sensor(get_address(), get_mac_address())
 # Указать имя комнаты, в которой стоит сенсор, через форматирование файла.
 NAME_ROOM = '__NAME_ROOM__'.lower()
+# Объект сенсора.
+SENSOR = Sensor(get_address(), get_mac_address())
 # Сообщения, которые будут отправляться сенсору.
 message_for_sensor = None
 # Универсальный объект, который генерирует данные для всех типов сенсоров.
@@ -124,9 +131,9 @@ dict_func = {
     'set_water_in_room': data_for_sensor.set_water_in_room,
 }
 # Протокол, на котором работает сеть
-PROTOCOL = get_protocol()
+PROTOCOL = '__PROTOCOL__'
 
-if PROTOCOL == 'tcp':
+if PROTOCOL == 'TCP':
     def send_data_to_sensor():
         import socket
         global message_for_sensor
@@ -141,6 +148,18 @@ if PROTOCOL == 'tcp':
                 # (?<=\/)\w+ - регулярное выражение.
                 # Я просто очищаю команду от говна "/" которое телеграмм добавляет.
                 message_for_sensor = re.search(r'(?<=\/)\w+', message_for_sensor).group()
+elif PROTOCOL == 'MQTT':
+    raise Exception()
+elif PROTOCOL == 'AQMP':
+    raise Exception()
+elif PROTOCOL == 'COAP':
+    raise Exception()
+elif PROTOCOL == 'UDP':
+    raise Exception()
+elif PROTOCOL == 'HTTP':
+    raise Exception()
+else:
+    raise shm_exceptions.ExceptionErrorProtocol()
 
 if __name__ == '__main__':
     thread = Thread(

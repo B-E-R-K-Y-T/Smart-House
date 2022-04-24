@@ -1,0 +1,19 @@
+FROM python:3.9-slim as builder
+
+# Директория скрипта
+WORKDIR /{sensor}
+
+# Переменные окружения python
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+FROM python:3.9-slim
+
+# Директория скрипта
+WORKDIR /{sensor}
+
+COPY --from=builder /{sensor} .
+
+ADD {sensor}.py /{sensor}
+
+EXPOSE 1234
