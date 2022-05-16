@@ -17,8 +17,13 @@ print(socket.gethostbyname(socket.gethostname()))
 
 import asyncio
 import re
-
 import shm_exceptions
+import mongo_api
+
+from datetime import datetime
+
+import shm_protocols
+from config import MONGO_NAME_DB
 from parse_files import read_json_file
 from shm_exceptions import ExceptionTypeSensor
 from threading import Thread
@@ -32,7 +37,10 @@ def get_address():
     """
         Возвращает либо ip адрес либо pin_id
     """
-    return '127.0.0.1'
+    import socket
+
+    # return socket.gethostbyname(socket.gethostname())
+    return '192.168.1.69'
 
 
 def get_mac_address():
@@ -40,7 +48,7 @@ def get_mac_address():
 
 
 def get_port():
-    return 55000
+    return 8888
 
 
 def get_protocol():
@@ -61,7 +69,25 @@ def get_functions_from_request(request: str) -> list:
     return re.findall(r'(?<=\{).+?(?=\})', request)
 
 
+async def write_logs(data=None):
+    """
+        Эта функция записывает логи сенсора в бд
+    """
+    collection = mongo_db[f'{TYPE_SENSOR}_{NAME_SENSOR}']
+    log = {
+        'DATA': data,
+        'NAME_SENSOR': NAME_SENSOR,
+        'TYPE_SENSOR': TYPE_SENSOR,
+        'DATE_TIME': datetime.now().strftime("Дата: %d/%m/%Y  Время: %H:%M:%S"),
+        'NAME_ROOM': NAME_ROOM
+    }
+
+    collection.insert_one(log)
+
+
 async def working_sensor(arg_commands: dict) -> None:
+    global message_for_sensor
+
     while True:
         for arg_command, structure_command in arg_commands.items():
             if message_for_sensor == arg_command:
@@ -84,16 +110,16 @@ async def working_sensor(arg_commands: dict) -> None:
                     # значений функций в том же порядке, в котором они стояли в исходной
                     # строке, тем самым я "вызвал" эти функции в json-файле.
                     # Надеюсь, что понятно описал...
-                    print(
-                        replace_dict(
-                            {key: '' for key in get_functions_from_request(to_do)}, to_do).format(
-                                *[func() for func in function_list])
-                    )
+                    result = replace_dict(
+                        {key: '' for key in get_functions_from_request(to_do)}, to_do).format(
+                        *[func() for func in function_list])
+                    print(result)
+                    await write_logs(result)
                     break
         else:
             if message_for_sensor is not None:
                 print(f'Такой "{message_for_sensor}" команды нет!')
-                global message_for_sensor
+                await write_logs(f'Такой "{message_for_sensor}" команды нет!')
                 message_for_sensor = None
 
         await asyncio.sleep(1)
@@ -113,6 +139,8 @@ message_for_sensor = None
 data_for_sensor = DataForSensor(name_sensor=NAME_SENSOR,
                                 status_network='online',
                                 name_room=NAME_ROOM)
+# База данных
+mongo_db = mongo_api.MongoSH().get_mongo_object()[MONGO_NAME_DB]
 # Функционал сенсора:
 dict_func = {
     'get_now_date_and_time': data_for_sensor.get_now_date_and_time,
@@ -131,7 +159,7 @@ dict_func = {
     'set_water_in_room': data_for_sensor.set_water_in_room,
 }
 # Протокол, на котором работает сеть
-PROTOCOL = '__PROTOCOL__'
+PROTOCOL = get_protocol().upper()
 
 if PROTOCOL == 'TCP':
     def send_data_to_sensor():

@@ -49,6 +49,19 @@ async def create_csv_file_if_not_exists_async(loc_name_file, names=None):
             file_writer.writeheader()
 
 
+def replace_dict(dict_words: dict, line: str) -> str:
+    for old_word, new_word in dict_words.items():
+        line = line.replace(str(old_word), str(new_word))
+
+    return line
+
+
+def read_file(path):
+    with codecs.open(path, encoding='utf-8', mode='r') as file:
+        for line in file:
+            yield line
+
+
 def read_json_file(path_to_file: str) -> None:
     with open(path_to_file) as json_file:
         data = json.load(json_file)

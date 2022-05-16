@@ -14,12 +14,19 @@ import asyncio
 import parse_files
 import csv
 import base_client
+import requests
+
+from http.server import BaseHTTPRequestHandler
+from http.server import HTTPServer
+from http.server import CGIHTTPRequestHandler
 
 clients = []
 
 
 # TCP протокол
 # ----------------------------------------------------------------------------------------------------------------------
+
+
 class TCPServerProtocol(asyncio.Protocol):
     # Вызывается если соединение с сервером было
     # установлено!
@@ -82,4 +89,45 @@ class TCPServerProtocol(asyncio.Protocol):
         clients.remove(self.transport.get_extra_info('peername'))
         print('<SERVER>: Connection with {} is lost!'.format(self.transport.
                                                              get_extra_info('peername')))
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+# HTTP протокол
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+# TODO: Сделать так, чтобы этот протокол принимал запросы от Егора.
+class Http:
+    class HttpGetHandler(BaseHTTPRequestHandler):
+        """Обработчик с реализованным методом do_GET."""
+
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write('<html><head><meta charset="utf-8">'.encode())
+            self.wfile.write('<title>Простой HTTP-сервер.</title></head>'.encode())
+            self.wfile.write('<body>Был получен GET-запрос.</body></html>'.encode())
+
+        def do_POST(self):
+            print(self.request())
+
+    def request_post(self, address, data):
+        requests.post(address, data=data)
+
+    def run(self, server_class=HTTPServer, handler_class=HttpGetHandler):
+        server_address = ('192.168.1.69', 3000)
+        httpd = server_class(server_address, handler_class)
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            httpd.server_close()
+
+
+h = Http()
+h.run()
+
+
 # ----------------------------------------------------------------------------------------------------------------------
