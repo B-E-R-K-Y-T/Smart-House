@@ -128,7 +128,7 @@ async def check_login_user(message: types.Message):
 
 async def send_text_to_server(message: types.Message):
     try:
-        client = base_client.Client('192.168.1.69', 8888).get_client()
+        client = base_client.Client('127.0.0.1', 8888).get_client()
         client.send(message.text.encode('utf-8'))
 
         await message.answer('Запрос отправлен корректно.')

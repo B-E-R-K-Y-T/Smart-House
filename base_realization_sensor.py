@@ -21,8 +21,6 @@ import shm_exceptions
 import mongo_api
 
 from datetime import datetime
-
-import shm_protocols
 from config import MONGO_NAME_DB
 from parse_files import read_json_file
 from shm_exceptions import ExceptionTypeSensor
@@ -40,7 +38,7 @@ def get_address():
     import socket
 
     # return socket.gethostbyname(socket.gethostname())
-    return '192.168.1.69'
+    return '127.0.0.1'
 
 
 def get_mac_address():
@@ -194,6 +192,8 @@ if __name__ == '__main__':
         target=send_data_to_sensor,
     )
     thread.start()
+
+    print('as')
 
     for type_sensor, commands in read_json_file('type_sensors.json'):
         if TYPE_SENSOR == type_sensor:
