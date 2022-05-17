@@ -193,8 +193,6 @@ if __name__ == '__main__':
     )
     thread.start()
 
-    print('as')
-
     for type_sensor, commands in read_json_file('type_sensors.json'):
         if TYPE_SENSOR == type_sensor:
             asyncio.run(working_sensor(commands))

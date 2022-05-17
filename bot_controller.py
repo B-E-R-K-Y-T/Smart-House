@@ -48,7 +48,7 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
 
-def get_list_command():
+def get_collection_command():
     result = []
     for _, commands in read_json_file('type_sensors.json'):
         for key in commands:
@@ -67,7 +67,7 @@ async def send_welcome(message: types.Message):
     await message.answer("Hi!\nI'm smart home mirea bot!")
 
 
-@dp.message_handler(commands=get_list_command())
+@dp.message_handler(commands=get_collection_command())
 async def request_to_server(message: types.Message):
     if await check_login_user(message):
         await send_text_to_server(message)

@@ -22,6 +22,30 @@ from http.server import CGIHTTPRequestHandler
 
 clients = []
 
+# ----------------------------------------------------------------------------------------------------------------------
+
+# Запуск этого говна: FLASK_APP=shm_protocols.py flask run -h localhost -p 5001
+# Пример запроса:
+"""
+curl --request POST --header 'Content-Type: application/json' --data '{"key": "value"}' 'http://192.168.1.69:3000/echo'
+{
+  "key": "value"
+}
+"""
+# ПРИНИМАЕТ POST ЗАПРОСЫ.
+'''
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+
+@app.route('/echo', methods=['POST'])
+def echo():
+    return jsonify(request.get_json(force=True))
+    
+'''
+# ----------------------------------------------------------------------------------------------------------------------
+
 
 # TCP протокол
 # ----------------------------------------------------------------------------------------------------------------------
@@ -98,6 +122,7 @@ class TCPServerProtocol(asyncio.Protocol):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
+
 # TODO: Сделать так, чтобы этот протокол принимал запросы от Егора.
 class Http:
     class HttpGetHandler(BaseHTTPRequestHandler):
@@ -126,8 +151,9 @@ class Http:
             httpd.server_close()
 
 
-h = Http()
-h.run()
-
-
 # ----------------------------------------------------------------------------------------------------------------------
+
+
+if __name__ == '__main__':
+    h = Http()
+    h.run()
