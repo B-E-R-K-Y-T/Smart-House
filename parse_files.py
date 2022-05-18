@@ -116,7 +116,7 @@ def count_file_in_folder(path, file_name):
 def list_names_file_in_folder(path, file_name):
 
     """
-    Подсчитывает кол - во файлов в директории.
+   Возвращает список определенных файлов в директории.
 
     :param path:
         Путь до директории, где мы проверяем кол - во файлов.
