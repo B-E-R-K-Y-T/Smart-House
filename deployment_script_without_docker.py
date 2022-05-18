@@ -9,6 +9,7 @@
 # Скрипт для развертывания проекта.
 
 # ----------------------------------------------------------------------------------------------------------------------
+import os
 
 import parse_files
 import requests
@@ -29,7 +30,7 @@ class Http:
             self.send_header("Access-Control-Allow-Methods", "GET")
             self.end_headers()
             name, type_sensor = create_sensor()
-            request = f'"["name": "{name}", "type_sensor": "{type_sensor}"]"'
+            request = f'"["name": "{name}"]"'
             request = request.replace('[', '{').replace(']', '}')
             self.wfile.write(request.encode())
 
