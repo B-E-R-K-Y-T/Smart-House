@@ -20,35 +20,10 @@ from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer
 from http.server import CGIHTTPRequestHandler
 
-clients = []
-
-# ----------------------------------------------------------------------------------------------------------------------
-
-# Запуск этого говна: FLASK_APP=shm_protocols.py flask run -h localhost -p 5001
-# Пример запроса:
-"""
-curl --request POST --header 'Content-Type: application/json' --data '{"key": "value"}' 'http://192.168.1.69:3000/echo'
-{
-  "key": "value"
-}
-"""
-# ПРИНИМАЕТ POST ЗАПРОСЫ.
-'''
-from flask import Flask, jsonify, request
-
-app = Flask(__name__)
-
-
-@app.route('/echo', methods=['POST'])
-def echo():
-    return jsonify(request.get_json(force=True))
-    
-'''
-# ----------------------------------------------------------------------------------------------------------------------
-
 
 # TCP протокол
 # ----------------------------------------------------------------------------------------------------------------------
+clients = []
 
 
 class TCPServerProtocol(asyncio.Protocol):
@@ -121,23 +96,24 @@ class TCPServerProtocol(asyncio.Protocol):
 # HTTP протокол
 # ----------------------------------------------------------------------------------------------------------------------
 
-
-
 # TODO: Сделать так, чтобы этот протокол принимал запросы от Егора.
 class Http:
+    class State:
+        @staticmethod
+        def test():
+            return 1
+
     class HttpGetHandler(BaseHTTPRequestHandler):
         """Обработчик с реализованным методом do_GET."""
 
         def do_GET(self):
             self.send_response(200)
-            self.send_header("Content-type", "text/html")
+            self.send_header("Content-type", "application/json")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "GET")
             self.end_headers()
-            self.wfile.write('<html><head><meta charset="utf-8">'.encode())
-            self.wfile.write('<title>Простой HTTP-сервер.</title></head>'.encode())
-            self.wfile.write('<body>Был получен GET-запрос.</body></html>'.encode())
-
-        def do_POST(self):
-            print(self.request())
+            self.wfile.write('ПОШЕЛ НАХУЙ'.encode())
+            self.wfile.write('ПРОЕКТ - ГОВНО!'.encode())
 
     def request_post(self, address, data):
         requests.post(address, data=data)

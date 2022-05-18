@@ -69,6 +69,11 @@ def read_json_file(path_to_file: str) -> None:
             yield key, value
 
 
+def create_folder_if_not_exists(loc_name_file):
+    if not os.path.exists(loc_name_file):
+        os.mkdir(loc_name_file)
+
+
 def create_file_if_not_exists(loc_name_file):
     if not os.path.exists(loc_name_file):
         with open(loc_name_file, 'w') as f:
