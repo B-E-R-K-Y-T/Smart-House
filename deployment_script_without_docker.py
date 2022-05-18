@@ -30,7 +30,8 @@ class Http:
             self.send_header("Access-Control-Allow-Methods", "GET")
             self.end_headers()
             name, type_sensor = create_sensor()
-            request = f'"["name": "{name}"]"'
+            names = parse_files.list_names_file_in_folder('sensors', 'name_')
+            request = f'"["names": "{names}"]"'
             request = request.replace('[', '{').replace(']', '}')
             self.wfile.write(request.encode())
 

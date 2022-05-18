@@ -113,6 +113,28 @@ def count_file_in_folder(path, file_name):
     return count_file + 1
 
 
+def list_names_file_in_folder(path, file_name):
+
+    """
+    Подсчитывает кол - во файлов в директории.
+
+    :param path:
+        Путь до директории, где мы проверяем кол - во файлов.
+    :param file_name:
+        Строка, которая должна содержаться в имени файла.
+    :return:
+        Возвращает кол - во таких файлов в директории.
+    """
+
+    file_name, count_file = str(file_name), 0
+    res = []
+    for i in range(len(os.listdir(path))):
+        if file_name in str(os.listdir(path)[i]):
+            res.append(file_name)
+
+    return res
+
+
 def count_lines_in_file(path):
 
     """
