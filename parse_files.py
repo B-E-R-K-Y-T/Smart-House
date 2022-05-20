@@ -130,7 +130,7 @@ def list_names_file_in_folder(path, file_name):
     res = []
     for i in range(len(os.listdir(path))):
         if file_name in str(os.listdir(path)[i]):
-            res.append(file_name)
+            res.append(str(os.listdir(path)[i]))
 
     return res
 

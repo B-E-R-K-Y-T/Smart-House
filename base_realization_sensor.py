@@ -124,7 +124,7 @@ async def working_sensor(arg_commands: dict) -> None:
 
 
 # Указать тип сенсора через форматирование файла.
-TYPE_SENSOR = 'temperature_sensor'.lower()
+TYPE_SENSOR = '__TYPE_SENSOR__'.lower()
 # Указать имя сенсора через форматирование файла.
 NAME_SENSOR = '__NAME_SENSOR__'.lower()
 # Указать имя комнаты, в которой стоит сенсор, через форматирование файла.
