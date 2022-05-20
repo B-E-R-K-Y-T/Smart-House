@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 @app.route('/create_sensor', methods=['POST'])
 def create_sensor():
+    # ЗАЕБАЛО
     dict_data_of_sensor = dict(request.get_json(force=True))
     print(type(dict_data_of_sensor))
     print(dict_data_of_sensor)
