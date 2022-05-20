@@ -1,3 +1,4 @@
+import os
 import random
 
 from flask import Flask, jsonify, request
@@ -30,6 +31,9 @@ def create_sensor():
             json_file.write(line)
 
     requests.post(url='http://iotmirtech.ru/panel/devices', data=dict_data_of_sensor)
+
+    main_directory = __file__[:str(__file__).rfind('/')]
+    os.system(f'{main_directory}/sensors/{name}/{name}.py')
 
     return jsonify(request.get_json(force=True))
 
