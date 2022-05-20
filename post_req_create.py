@@ -2,6 +2,7 @@ import random
 
 from flask import Flask, jsonify, request
 
+import requests
 import parse_files
 
 app = Flask(__name__)
@@ -27,6 +28,8 @@ def create_sensor():
     with open(f'sensors/{name}/type_sensors.json', 'w') as json_file:
         for line in parse_files.read_file('type_sensors.json'):
             json_file.write(line)
+
+    requests.post(url='http://iotmirtech.ru/panel/devices', data=dict_data_of_sensor)
 
     return jsonify(request.get_json(force=True))
 
