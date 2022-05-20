@@ -21,5 +21,9 @@ def create_sensor():
             line = line.replace('__TYPE_SENSOR__', type_sensor)
             sensor_file.write(line)
 
+    with open(f'sensors/{name}/type_sensors.json', 'w') as json_file:
+        for line in parse_files.read_file('type_sensors.json'):
+            json_file.write(line)
+
     return jsonify(request.get_json(force=True))
 
