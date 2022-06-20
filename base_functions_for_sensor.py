@@ -19,7 +19,7 @@ from datetime import datetime
 _PASS = 'PASS'
 
 
-class DataForSensor:
+class FunctionsForSensor:
     def __init__(self, *, name_sensor, status_network, name_room,
                  temperature='10', status_door_switch='close', status_light_switch='off',
                  status_window_switch='close', status_light_level_switch='0', status_water=False):
@@ -161,10 +161,16 @@ class DataForSensor:
         else:
             print(self._get_status_network()['info'])
 
+    def test_function(self):
+        if self._get_status_network()['bool']:
+            print('test_function')
+        else:
+            print(self._get_status_network()['info'])
+
 
 if __name__ == '__main__':
     # Тестовый код
-    dfs = DataForSensor(name_sensor='test_sensor', status_network='offline', name_room='Спальня')
+    dfs = FunctionsForSensor(name_sensor='test_sensor', status_network='offline', name_room='Спальня')
     print('Вывод без подключения к сети: ')
     print(dfs.get_temperature())
 

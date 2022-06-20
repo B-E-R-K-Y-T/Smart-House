@@ -26,7 +26,7 @@ from parse_files import read_json_file
 from shm_exceptions import ExceptionTypeSensor
 from threading import Thread
 from base_sensor import Sensor
-from base_data_for_sensor import DataForSensor
+from base_functions_for_sensor import FunctionsForSensor
 
 
 # Заглушки
@@ -77,23 +77,27 @@ async def write_logs(data=None):
         'NAME_SENSOR': NAME_SENSOR,
         'TYPE_SENSOR': TYPE_SENSOR,
         'DATE_TIME': datetime.now().strftime("Дата: %d/%m/%Y  Время: %H:%M:%S"),
-        'NAME_ROOM': NAME_ROOM
+        'NAME_ROOM': NAME_ROOM,
+        'PROTOCOL': get_protocol().upper()
     }
 
-    collection.insert_one(log)
+    # collection.insert_one(log)
+    collection.update_one(log)
 
 
 async def working_sensor(arg_commands: dict) -> None:
     global message_for_sensor
 
     while True:
-        for arg_command, structure_command in arg_commands.items():
-            if message_for_sensor == arg_command:
+        for name_command, structure_command in arg_commands.items():
+            if message_for_sensor == name_command:
                 to_do = structure_command['to_do']
-                if message_for_sensor.startswith('f_'):
-                    args = structure_command['args'].split(',')
+                if message_for_sensor.startswith('config_'):
+                    args = structure_command['args'].replace(' ', '').split(',')
                     dict_func[to_do](*args)
                     break
+                elif message_for_sensor.startswith('f_'):
+                    pass
                 else:
                     # Парсинг строки json файла. Достаю оттуда все названия функций и храню
                     # ссылки на них в списке function_list
@@ -134,27 +138,27 @@ SENSOR = Sensor(get_address(), get_mac_address())
 # Сообщения, которые будут отправляться сенсору.
 message_for_sensor = None
 # Универсальный объект, который генерирует данные для всех типов сенсоров.
-data_for_sensor = DataForSensor(name_sensor=NAME_SENSOR,
-                                status_network='online',
-                                name_room=NAME_ROOM)
+functions_for_sensor = FunctionsForSensor(name_sensor=NAME_SENSOR,
+                                          status_network='online',
+                                          name_room=NAME_ROOM)
 # База данных
 mongo_db = mongo_api.MongoSH().get_mongo_object()[MONGO_NAME_DB]
 # Функционал сенсора:
 dict_func = {
-    'get_now_date_and_time': data_for_sensor.get_now_date_and_time,
-    'get_name_room': data_for_sensor.get_name_room,
-    'get_water_in_room': data_for_sensor.get_water_in_room,
-    'get_temperature': data_for_sensor.get_temperature,
-    'get_status_online': data_for_sensor.get_status_online,
-    'get_status_window_switch': data_for_sensor.get_status_window_switch,
-    'get_status_door_switch': data_for_sensor.get_status_door_switch,
-    'get_status_light_switch': data_for_sensor.get_status_light_switch,
-    'get_light_level': data_for_sensor.get_light_level,
-    'set_status_network': data_for_sensor.set_status_network,
-    'set_status_door_switch': data_for_sensor.set_status_door_switch,
-    'set_status_light_switch': data_for_sensor.set_status_light_switch,
-    'set_name_room': data_for_sensor.set_name_room,
-    'set_water_in_room': data_for_sensor.set_water_in_room,
+    'get_now_date_and_time': functions_for_sensor.get_now_date_and_time,
+    'get_name_room': functions_for_sensor.get_name_room,
+    'get_water_in_room': functions_for_sensor.get_water_in_room,
+    'get_temperature': functions_for_sensor.get_temperature,
+    'get_status_online': functions_for_sensor.get_status_online,
+    'get_status_window_switch': functions_for_sensor.get_status_window_switch,
+    'get_status_door_switch': functions_for_sensor.get_status_door_switch,
+    'get_status_light_switch': functions_for_sensor.get_status_light_switch,
+    'get_light_level': functions_for_sensor.get_light_level,
+    'set_status_network': functions_for_sensor.set_status_network,
+    'set_status_door_switch': functions_for_sensor.set_status_door_switch,
+    'set_status_light_switch': functions_for_sensor.set_status_light_switch,
+    'set_name_room': functions_for_sensor.set_name_room,
+    'set_water_in_room': functions_for_sensor.set_water_in_room,
 }
 # Протокол, на котором работает сеть
 PROTOCOL = get_protocol().upper()

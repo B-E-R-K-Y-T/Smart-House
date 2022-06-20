@@ -8,14 +8,13 @@
       "to_do": "Время сейчас: {get_now_date_and_time}",
       "description": "Эта команда нужна, чтобы узнать температуру в комнате."
     },
-    "f_set_status_network_offline": {
+    "config_set_status_network_offline": {
       "to_do": "set_status_network",
       "args": "offline",
       "description": "PASS"
     },
-    "f_set_status_network_online": {
-      "to_do": "set_status_network",
-      "args": "online",
+    "f_test_function": {
+      "to_do": "test_function",
       "description": "PASS"
     }
   },

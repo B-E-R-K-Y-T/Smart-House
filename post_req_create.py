@@ -8,6 +8,8 @@ import parse_files
 
 app = Flask(__name__)
 
+main_directory = __file__[:str(__file__).rfind('/')]
+print(f'{main_directory}/sensors/sensors/sensors.py')
 
 @app.route('/create_sensor', methods=['POST'])
 def create_sensor():
@@ -32,8 +34,8 @@ def create_sensor():
 
     requests.post(url='http://iotmirtech.ru/panel/devices', data=dict_data_of_sensor)
 
-    main_directory = __file__[:str(__file__).rfind('/')]
-    os.system(f'{main_directory}/sensors/{name}/{name}.py')
+    print(f'py {main_directory}/sensors/{name}/{name}.py')
+    os.system(f'py {main_directory}/sensors/{name}/{name}.py')
 
     return jsonify(request.get_json(force=True))
 
