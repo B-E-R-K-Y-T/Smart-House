@@ -12,7 +12,7 @@
 
 import csv
 import logging
-import base_client
+from utility.tools import base_client
 import bot_reg_mode
 import bot_authorization_mode
 import sys
@@ -24,8 +24,8 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 from aiogram import Bot, Dispatcher, executor, types
-from config import TOKEN
-from parse_files import read_json_file
+from config_files.config import TOKEN
+from utility.tools.parse_files import read_json_file
 
 API_TOKEN = TOKEN
 
@@ -50,7 +50,7 @@ dp = Dispatcher(bot, storage=storage)
 
 def get_collection_command():
     result = []
-    for _, commands in read_json_file('type_sensors.json'):
+    for _, commands in read_json_file('config_files/type_sensors.json'):
         for key in commands:
             result.append(key)
 

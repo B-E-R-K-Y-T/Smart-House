@@ -11,9 +11,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 import json
 import os
-import static_type
-import parse_files
-import shm_exceptions
+from utility.tools import static_type
 
 
 @static_type.decorate_static_type
@@ -45,7 +43,7 @@ def checking_exist_file(path_to_file: str) -> str:
 
 # Разворачивает проект.
 def set_smart_house_project() -> None:
-    with open('code.json', 'r') as js_f:
+    with open('../../code.json', 'r') as js_f:
         dict_json = json.load(js_f)
 
     for file in dict_json.keys():

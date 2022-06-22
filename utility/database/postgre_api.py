@@ -11,7 +11,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 import psycopg2
-from config import HOST, USER, PASSWORD, DATABASE
+from config_files.config import HOST, USER, PASSWORD, DATABASE
 
 connection = None
 

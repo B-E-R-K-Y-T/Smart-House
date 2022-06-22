@@ -12,7 +12,7 @@
 
 import csv
 
-from parse_files import create_csv_file_if_not_exists_async
+from utility.tools.parse_files import create_csv_file_if_not_exists_async
 
 name_file = 'users.csv'
 

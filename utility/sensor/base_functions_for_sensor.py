@@ -10,7 +10,7 @@
 # TODO: Добавить кондиционеры, печку
 
 import random
-import shm_exceptions
+from utility.tools import shm_exceptions
 
 from datetime import datetime
 

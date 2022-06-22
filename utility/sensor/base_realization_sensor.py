@@ -17,16 +17,16 @@ print(socket.gethostbyname(socket.gethostname()))
 
 import asyncio
 import re
-import shm_exceptions
-import mongo_api
+from utility.tools import shm_exceptions
+from utility.database import mongo_api
 
 from datetime import datetime
-from config import MONGO_NAME_DB
-from parse_files import read_json_file
-from shm_exceptions import ExceptionTypeSensor
+from config_files.config import MONGO_NAME_DB
+from utility.tools.parse_files import read_json_file
+from utility.tools.shm_exceptions import ExceptionTypeSensor
 from threading import Thread
-from base_sensor import Sensor
-from base_functions_for_sensor import FunctionsForSensor
+from utility.sensor.base_sensor import Sensor
+from utility.sensor.base_functions_for_sensor import FunctionsForSensor
 
 
 # Заглушки
@@ -35,7 +35,6 @@ def get_address():
     """
         Возвращает либо ip адрес либо pin_id
     """
-    import socket
 
     # return socket.gethostbyname(socket.gethostname())
     return '127.0.0.1'
@@ -197,7 +196,7 @@ if __name__ == '__main__':
     )
     thread.start()
 
-    for type_sensor, commands in read_json_file('type_sensors.json'):
+    for type_sensor, commands in read_json_file('../../config_files/type_sensors.json'):
         if TYPE_SENSOR == type_sensor:
             asyncio.run(working_sensor(commands))
             break

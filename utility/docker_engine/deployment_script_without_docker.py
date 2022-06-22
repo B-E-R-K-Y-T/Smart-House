@@ -9,9 +9,8 @@
 # Скрипт для развертывания проекта.
 
 # ----------------------------------------------------------------------------------------------------------------------
-import os
 
-import parse_files
+from utility.tools import parse_files
 import requests
 import random
 
@@ -30,7 +29,7 @@ class Http:
             self.send_header("Access-Control-Allow-Methods", "GET")
             self.end_headers()
             name, type_sensor = create_sensor()
-            names = parse_files.list_names_file_in_folder('sensors', 'name_')
+            names = parse_files.list_names_file_in_folder('../../sensors', 'name_')
             request = f'"["names": "{names}"]"'
             request = request.replace('[', '{').replace(']', '}')
             self.wfile.write(request.encode())
@@ -52,7 +51,7 @@ def create_sensor():
     type_sensor = 'temperature_sensor'
     parse_files.create_folder_if_not_exists(f'sensors/{name}')
     with open(f'sensors/{name}/{name}.py', 'w') as sensor_file:
-        for line in parse_files.read_file('base_realization_sensor.py'):
+        for line in parse_files.read_file('../sensor/base_realization_sensor.py'):
             sensor_file.write(line)
 
     return name, type_sensor

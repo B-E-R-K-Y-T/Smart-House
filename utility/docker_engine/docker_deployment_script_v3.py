@@ -11,7 +11,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 
 import re
-import parse_files
+from utility.tools import parse_files
 
 # -create -sensor[-path /home/berkyt/PycharmProjects/smart_home/sensors/e_1; -name name; -type type; -protocol protocol; -name_room name_room;];;
 # -edit -type
@@ -73,7 +73,7 @@ def get_content(line):
 
 def create_sensor(*, path_sensor, name_sensor, type_sensor, protocol_sensor, name_room):
     with open(f'{path_sensor}/{name_sensor}', mode='a') as file_sensor:
-        for line in parse_files.read_file('base_realization_sensor.py'):
+        for line in parse_files.read_file('../sensor/base_realization_sensor.py'):
             line = parse_files.replace_dict({'__TYPE_SENSOR__': type_sensor,
                                              '__PROTOCOL__': protocol_sensor,
                                              '__NAME_SENSOR__': name_sensor,

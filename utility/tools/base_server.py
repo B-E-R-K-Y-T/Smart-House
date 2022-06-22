@@ -12,8 +12,8 @@
 
 import asyncio
 
-from shm_exceptions import ExceptionErrorProtocol
-from shm_protocols import TCPServerProtocol
+from utility.tools.shm_exceptions import ExceptionErrorProtocol
+from utility.tools.shm_protocols import TCPServerProtocol
 
 
 class Server(TCPServerProtocol):

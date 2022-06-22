@@ -17,7 +17,7 @@ import random
 
 # Разворачивает проект.
 def set_smart_house_project():
-    with open('code.json', 'r') as js_f:
+    with open('../../code.json', 'r') as js_f:
         dict_json = json.load(js_f)
 
     for file in dict_json.keys():
@@ -39,7 +39,7 @@ def add_files():
             continue
         else:
             break
-    path_to_file = 'sensors'
+    path_to_file = '../../sensors'
 
     if not os.path.exists(f'{path_to_file}'):
         os.mkdir(f'{path_to_file}')
@@ -119,10 +119,10 @@ if __name__ == '__main__':
             # Сборка докер - файлa.
             copying_file(path_to_file, sensor, 'Dockerfile', 'Docker_origin', False)
             # Сборка base_client(ЭТО КОСТЫЛЬ ЕБАНЫЙ СУКА)
-            copying_file(path_to_file, sensor, 'base_client.py', 'base_client.py')
+            copying_file(path_to_file, sensor, '../tools/base_client.py', 'base_client.py')
 
     # БЛЯТСКОЕ ГОВНИЩЕ СУКА НАХУЙ БЛЯТЬ ЭТО ГОВНО СУКА НО МНЕ ПОХУЙ УЖЕ(Это порты генерятся.)
-    with open(f'ports.txt', 'a') as f:
+    with open(f'../../ports.txt', 'a') as f:
         for port_ in list_ports:
             f.write(str(port_) + ',')
 

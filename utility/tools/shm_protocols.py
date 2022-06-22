@@ -18,8 +18,6 @@ import requests
 
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer
-from http.server import CGIHTTPRequestHandler
-
 
 # TCP протокол
 # ----------------------------------------------------------------------------------------------------------------------
@@ -50,7 +48,7 @@ class TCPServerProtocol(asyncio.Protocol):
 
         # print(data_client)
 
-        with open('ports.txt', 'r') as f:
+        with open('../../ports.txt', 'r') as f:
             for port in str(f.read()).split(','):
                 print('message = ' + message)
 
@@ -63,10 +61,10 @@ class TCPServerProtocol(asyncio.Protocol):
                     continue
 
         # Проверка на существование файла 'commands.csv'. Если его не будет - создать.
-        parse_files.create_csv_file_if_not_exists('commands.csv')
+        parse_files.create_csv_file_if_not_exists('../../commands.csv')
 
         # Запись запроса от бота на сервере в csv - файл
-        with open('commands.csv', 'a') as f:
+        with open('../../commands.csv', 'a') as f:
             names = ["Address", "Command"]
             file_writer = csv.DictWriter(f, delimiter=",",
                                          lineterminator="\r", fieldnames=names)
