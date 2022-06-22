@@ -10,7 +10,7 @@
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-class ExceptionErrorProtocol(Exception):
+class ErrorProtocolException(Exception):
     def __init__(self, *args):
         if args:
             self.message = args[0]
@@ -24,7 +24,7 @@ class ExceptionErrorProtocol(Exception):
             return 'ExceptionErrorProtocol: Unknown protocol!'
 
 
-class ExceptionErrorCommand(Exception):
+class ErrorCommandException(Exception):
     def __init__(self, *args):
         if args:
             self.message = args[0]
@@ -38,7 +38,7 @@ class ExceptionErrorCommand(Exception):
             return 'ExceptionErrorCommand: Unknown command!'
 
 
-class ExceptionDockerFileNotFound(Exception):
+class DockerFileNotFoundException(Exception):
     def __init__(self, *args):
         if args:
             self.message = args[0]
@@ -52,7 +52,7 @@ class ExceptionDockerFileNotFound(Exception):
             return 'ExceptionDockerFileNotFound: Docker file does not exist!'
 
 
-class ExceptionOnlineStatus(Exception):
+class OnlineStatusException(Exception):
     def __init__(self, *args):
         if args:
             self.message = args[0]
@@ -66,7 +66,7 @@ class ExceptionOnlineStatus(Exception):
             return 'ExceptionOnlineStatus: This status does not exist!'
 
 
-class ExceptionTypeSensor(Exception):
+class TypeSensorException(Exception):
     def __init__(self, *args):
         if args:
             self.message = args[0]

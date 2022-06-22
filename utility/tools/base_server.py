@@ -12,7 +12,7 @@
 
 import asyncio
 
-from utility.tools.shm_exceptions import ExceptionErrorProtocol
+from utility.tools.shm_exceptions import ErrorProtocolException
 from utility.tools.shm_protocols import TCPServerProtocol
 
 
@@ -44,7 +44,7 @@ class Server(TCPServerProtocol):
 
                 break
         else:
-            raise ExceptionErrorProtocol('I do not know such a protocol :(')
+            raise ErrorProtocolException('I do not know such a protocol!')
 
         async with server:
             # Метод Server.serve_forever() начинает принимать

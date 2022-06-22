@@ -42,23 +42,19 @@ class TCPServerProtocol(asyncio.Protocol):
     def data_received(self, data):
         print(f'Path to file with: <{__file__}>\n\n<SERVER>: Packages received.')
 
+        print(f'DATA IS {data}')
+
         message = data.decode()
         # self.transport.write(('Echoed back: {}'.format(message)).encode())
         # data_client = websockets.recv()
 
         # print(data_client)
-
-        with open('../../ports.txt', 'r') as f:
-            for port in str(f.read()).split(','):
-                print('message = ' + message)
-
-                try:
-                    client = base_client.Client('127.0.0.1', int(port)).get_client()
-                    client.send(message.encode('utf-8'))
-                except Exception as e:
-                    error_msg = f'Path to file with error: <{__file__}>\n\n<SERVER>: {e}'
-                    print(error_msg)
-                    continue
+        try:
+            client = base_client.Client('127.0.0.1', 8080).get_client()
+            client.send(message.encode('utf-8'))
+        except Exception as e:
+            error_msg = f'Path to file with error: <{__file__}>\n\n<SERVER>: {e}'
+            print(error_msg)
 
         # Проверка на существование файла 'commands.csv'. Если его не будет - создать.
         parse_files.create_csv_file_if_not_exists('../../commands.csv')
@@ -84,8 +80,8 @@ class TCPServerProtocol(asyncio.Protocol):
 
     def connection_lost(self, exc):
         clients.remove(self.transport.get_extra_info('peername'))
-        print('<SERVER>: Connection with {} is lost!'.format(self.transport.
-                                                             get_extra_info('peername')))
+        print('<SERVER>: Connection with {} is close!'.format(self.transport.
+                                                              get_extra_info('peername')))
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -123,7 +119,6 @@ class Http:
             httpd.serve_forever()
         except KeyboardInterrupt:
             httpd.server_close()
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 

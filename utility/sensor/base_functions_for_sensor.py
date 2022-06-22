@@ -40,7 +40,7 @@ class FunctionsForSensor:
         elif self.status_network == 'offline':
             return False
         else:
-            raise shm_exceptions.ExceptionOnlineStatus
+            raise shm_exceptions.OnlineStatusException
 
     def _get_status_network(self):
         if self._check_status_network():

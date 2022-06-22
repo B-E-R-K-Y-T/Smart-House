@@ -1,6 +1,6 @@
 import pymongo
 
-from config_files.config import MONGO_IP, MONGO_PORT
+from config_files.main_config import MONGO_IP, MONGO_PORT
 
 
 class MongoSH:

@@ -1,0 +1,17 @@
+{
+  "main_protocol":"TCp",
+  "message_protocol":"PASS",
+  "type_sensor":"temperature_sensor",
+  "type_power":"Тип батарея или нет",
+  "sleep_mode":"PASS",
+  "name_room":"PASS",
+  "name_sensor":"PASS",
+  "role_sensor":["Тут будет несколько ролей как в дисе"],
+  "address":{
+    "ip_v4":"127.0.0.1",
+    "ip_v6":"PASS",
+    "mac_address":"PASS(ТИПА ТОГО '22:F1:55:5D:76:DF')",
+    "pin_id":"PASS"
+  },
+  "port": 8080
+}

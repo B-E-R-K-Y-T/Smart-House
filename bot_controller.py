@@ -24,7 +24,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 from aiogram import Bot, Dispatcher, executor, types
-from config_files.config import TOKEN
+from config_files.main_config import TOKEN
 from utility.tools.parse_files import read_json_file
 
 API_TOKEN = TOKEN

@@ -15,44 +15,56 @@ print(socket.gethostbyname(socket.gethostname()))
     4) Датчик протечки воды
 """
 
-import asyncio
 import re
-from utility.tools import shm_exceptions
-from utility.database import mongo_api
+import socket
 
+from utility.database import mongo_api
 from datetime import datetime
-from config_files.config import MONGO_NAME_DB
+from config import PATH_TO_TYPE_SNR, IP_SERVER, PORT_SERVER
+from config_files.main_config import MONGO_NAME_DB
 from utility.tools.parse_files import read_json_file
-from utility.tools.shm_exceptions import ExceptionTypeSensor
+from utility.tools.static_type import decorate_static_type
+from utility.tools.shm_exceptions import TypeSensorException, ErrorProtocolException
 from threading import Thread
 from utility.sensor.base_sensor import Sensor
 from utility.sensor.base_functions_for_sensor import FunctionsForSensor
+from characteristics_parser import ConfigReader
+
+config_reader = ConfigReader()
+
+TYPE_SENSOR = config_reader.get_characteristic('type_sensor')
+
+NAME_SENSOR = config_reader.get_characteristic('name_sensor')
+
+NAME_ROOM = config_reader.get_characteristic('name_sensor')
+
+PORT = config_reader.get_characteristic('port')
+
+PROTOCOL = config_reader.get_characteristic('main_protocol').upper()
+
+MAC_ADDRESS = config_reader.get_characteristic('address')['mac_address']
 
 
 # Заглушки
 # -------------------------
 def get_address():
     """
-        Возвращает либо ip адрес либо pin_id
+        Возвращает либо ip-адрес либо pin_id
     """
 
     # return socket.gethostbyname(socket.gethostname())
-    return '127.0.0.1'
+    if PROTOCOL != 'ПРОТОКОЛУ В КОТОРОМ ЕСТЬ PIN_ID':
+        ip_v4 = config_reader.get_characteristic('address').get('ip_v4')
+        ip_v6 = config_reader.get_characteristic('address').get('ip_v6')
 
+        return ip_v4 if ip_v4 and ip_v4 != 'PASS' else ip_v6
+    else:
+        return config_reader.get_characteristic('address')['pin_id']
 
-def get_mac_address():
-    return '22:F1:55:5D:76:DF'
-
-
-def get_port():
-    return 8888
-
-
-def get_protocol():
-    return 'tcp'
 # -------------------------
 
 
+@decorate_static_type
 def replace_dict(dict_words: dict, line: str) -> str:
     for old_word, new_word in dict_words.items():
         line = line.replace(old_word, new_word)
@@ -60,13 +72,27 @@ def replace_dict(dict_words: dict, line: str) -> str:
     return line
 
 
+@decorate_static_type
 def get_functions_from_request(request: str) -> list:
     # (?<=\{).+?(?=\}) - регулярное выражение
     # Нахожу все вхождения в строку по сигнатуре: '{что-то написано}'
     return re.findall(r'(?<=\{).+?(?=\})', request)
 
 
-async def write_logs(data=None):
+@decorate_static_type
+def logging(data: str):
+    with open(file='log.txt', mode='a') as log_file:
+        log_file.write(f'{datetime.now().strftime("Дата: %d/%m/%Y  Время: %H:%M:%S")} '
+                       f'PROTOCOL = {PROTOCOL}\n\t'
+                       f'TYPE_SENSOR = {TYPE_SENSOR}\n\t'
+                       f'NAME_SENSOR = {NAME_SENSOR}\n\t'
+                       f'NAME_ROOM = {NAME_ROOM}\n\t'
+                       f'PORT = {PORT}\n\t'
+                       f'MAC_ADDRESS = {MAC_ADDRESS} : => '
+                       f'\n\t\t{data}\n\n')
+
+
+def write_logs(data=None):
     """
         Эта функция записывает логи сенсора в бд
     """
@@ -77,63 +103,56 @@ async def write_logs(data=None):
         'TYPE_SENSOR': TYPE_SENSOR,
         'DATE_TIME': datetime.now().strftime("Дата: %d/%m/%Y  Время: %H:%M:%S"),
         'NAME_ROOM': NAME_ROOM,
-        'PROTOCOL': get_protocol().upper()
+        'PROTOCOL': PROTOCOL
     }
 
-    # collection.insert_one(log)
-    collection.update_one(log)
+    try:
+        collection.insert_one(log)
+        # collection.update_one(log)
+    except Exception as e:
+        logging(f'{repr(e)}')
 
 
-async def working_sensor(arg_commands: dict) -> None:
-    global message_for_sensor
-
-    while True:
-        for name_command, structure_command in arg_commands.items():
-            if message_for_sensor == name_command:
-                to_do = structure_command['to_do']
-                if message_for_sensor.startswith('config_'):
-                    args = structure_command['args'].replace(' ', '').split(',')
-                    dict_func[to_do](*args)
-                    break
-                elif message_for_sensor.startswith('f_'):
-                    pass
-                else:
-                    # Парсинг строки json файла. Достаю оттуда все названия функций и храню
-                    # ссылки на них в списке function_list
-                    # Проще говоря, преобразовываю функции из json файла
-                    # в функции из DataForSensor.
-                    function_list = []
-                    for function in get_functions_from_request(to_do):
-                        function_list.append(dict_func[function])
-                    # Форматирую строку: создаю словарь названий функций. С помощью
-                    # функции replace_dict удаляю их, но оставляю после них такой
-                    # шаблон {} для метода .format в котором распаковываю список
-                    # значений функций в том же порядке, в котором они стояли в исходной
-                    # строке, тем самым я "вызвал" эти функции в json-файле.
-                    # Надеюсь, что понятно описал...
-                    result = replace_dict(
-                        {key: '' for key in get_functions_from_request(to_do)}, to_do).format(
-                        *[func() for func in function_list])
-                    print(result)
-                    await write_logs(result)
-                    break
-        else:
-            if message_for_sensor is not None:
-                print(f'Такой "{message_for_sensor}" команды нет!')
-                await write_logs(f'Такой "{message_for_sensor}" команды нет!')
-                message_for_sensor = None
-
-        await asyncio.sleep(1)
+@decorate_static_type
+def working_sensor(arg_commands: dict, message_for_sensor: str):
+    for name_command, structure_command in arg_commands.items():
+        if message_for_sensor == name_command:
+            to_do = structure_command['to_do']
+            if message_for_sensor.startswith('config_'):
+                args = structure_command['args'].replace(' ', '').split(',')
+                dict_func[to_do](*args)
+                break
+            elif message_for_sensor.startswith('f_'):
+                pass
+            else:
+                # Парсинг строки json-файла. Достаю оттуда все названия функций и храню
+                # ссылки на них в списке function_list
+                # Проще говоря, преобразовываю функции из json файла
+                # в функции из FunctionsForSensor.
+                function_list = []
+                for function in get_functions_from_request(to_do):
+                    function_list.append(dict_func[function])
+                # Форматирую строку: создаю словарь названий функций. С помощью
+                # функции replace_dict удаляю их, но оставляю после них такой
+                # шаблон {} для метода .format в котором распаковываю список
+                # значений функций в том же порядке, в котором они стояли в исходной
+                # строке, тем самым я "вызвал" эти функции в json-файле.
+                # Надеюсь, что понятно описал...
+                result = replace_dict(
+                    {key: '' for key in get_functions_from_request(to_do)}, to_do).format(
+                    *[func() for func in function_list])
+                print(result)
+                logging(f'Результат запроса от пользователя: {result}')
+                write_logs(result)
+                break
+    else:
+        if message_for_sensor is not None:
+            print(f'Такой "{message_for_sensor}" команды нет!')
+            logging(f'Такой "{message_for_sensor}" команды нет!')
+            write_logs(f'Такой "{message_for_sensor}" команды нет!')
 
 
-# Указать тип сенсора через форматирование файла.
-TYPE_SENSOR = '__TYPE_SENSOR__'.lower()
-# Указать имя сенсора через форматирование файла.
-NAME_SENSOR = '__NAME_SENSOR__'.lower()
-# Указать имя комнаты, в которой стоит сенсор, через форматирование файла.
-NAME_ROOM = '__NAME_ROOM__'.lower()
-# Объект сенсора.
-SENSOR = Sensor(get_address(), get_mac_address())
+SENSOR = Sensor(get_address(), MAC_ADDRESS)
 # Сообщения, которые будут отправляться сенсору.
 message_for_sensor = None
 # Универсальный объект, который генерирует данные для всех типов сенсоров.
@@ -160,23 +179,31 @@ dict_func = {
     'set_water_in_room': functions_for_sensor.set_water_in_room,
 }
 # Протокол, на котором работает сеть
-PROTOCOL = get_protocol().upper()
-
 if PROTOCOL == 'TCP':
+    # TODO: перенести реализацию для каждого протокола либо в отдельный класс, либо в модуль
     def send_data_to_sensor():
-        import socket
-        global message_for_sensor
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # создаем сокет
-        sock.bind((get_address(), get_port()))  # связываем сокет с портом, где он будет ожидать сообщения
+        sock.bind((get_address(), PORT))  # связываем сокет с портом, где он будет ожидать сообщения
         sock.listen(1)  # указываем сколько может сокет принимать соединений
         while True:
             conn, addr = sock.accept()  # начинаем принимать соединения
-            print('connected:', addr)  # выводим информацию о подключении
+            print(f'connected: {addr}')  # выводим информацию о подключении
+            logging('connected: addr') # выводим информацию о подключении
             message_for_sensor = conn.recv(2048).decode()  # принимаем данные от клиента, по 1024 байт
             if message_for_sensor.startswith('/'):
                 # (?<=\/)\w+ - регулярное выражение.
                 # Я просто очищаю команду от говна "/" которое телеграмм добавляет.
                 message_for_sensor = re.search(r'(?<=\/)\w+', message_for_sensor).group()
+
+            for type_sensor, commands in read_json_file(PATH_TO_TYPE_SNR):
+                if TYPE_SENSOR == type_sensor:
+                    working_sensor(commands, message_for_sensor)
+                    break
+                else:
+                    continue
+            else:
+                raise TypeSensorException()
+
 elif PROTOCOL == 'MQTT':
     raise Exception()
 elif PROTOCOL == 'AQMP':
@@ -188,19 +215,10 @@ elif PROTOCOL == 'UDP':
 elif PROTOCOL == 'HTTP':
     raise Exception()
 else:
-    raise shm_exceptions.ExceptionErrorProtocol()
+    raise ErrorProtocolException()
 
 if __name__ == '__main__':
     thread = Thread(
         target=send_data_to_sensor,
     )
     thread.start()
-
-    for type_sensor, commands in read_json_file('../../config_files/type_sensors.json'):
-        if TYPE_SENSOR == type_sensor:
-            asyncio.run(working_sensor(commands))
-            break
-        else:
-            continue
-    else:
-        raise ExceptionTypeSensor
