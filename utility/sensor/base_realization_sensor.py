@@ -107,7 +107,7 @@ def working_sensor(arg_commands: dict, message_for_sensor: str):
             to_do = structure_command['to_do']
             if message_for_sensor.startswith('config_'):
                 args = structure_command['args'].replace(' ', '').split(',')
-                DICT_METHODS[to_do](*args)
+                METHODS_SENSOR[to_do](*args)
                 break
             elif message_for_sensor.startswith('f_'):
                 pass
@@ -118,7 +118,8 @@ def working_sensor(arg_commands: dict, message_for_sensor: str):
                 # в функции из FunctionsForSensor.
                 function_list = []
                 for function in get_functions_from_request(to_do):
-                    function_list.append(DICT_METHODS[function])
+                    function_list.append(METHODS_SENSOR[function])
+
                 # Форматирую строку: создаю словарь названий функций. С помощью
                 # функции replace_dict удаляю их, но оставляю после них такой
                 # шаблон {} для метода .format в котором распаковываю список
@@ -137,6 +138,17 @@ def working_sensor(arg_commands: dict, message_for_sensor: str):
             print(f'Такой "{message_for_sensor}" команды нет!')
             logging(f'Такой "{message_for_sensor}" команды нет!')
             write_logs(f'Такой "{message_for_sensor}" команды нет!')
+
+
+def send_command_to_sensor(message_for_sensor):
+    for type_sensor, commands in read_json_file(PATH_TO_TYPE_SNR):
+        if TYPE_SENSOR == type_sensor:
+            working_sensor(commands, message_for_sensor)
+            break
+        else:
+            continue
+    else:
+        raise TypeSensorException()
 
 
 config_reader = ConfigReader()
@@ -159,52 +171,45 @@ functions_for_sensor = FunctionsForSensor(name_sensor=NAME_SENSOR,
                                           status_network='online',
                                           name_room=NAME_ROOM)
 # Функционал сенсора
-DICT_METHODS = functions_for_sensor.get_methods()
+METHODS_SENSOR = functions_for_sensor.get_methods()
 # База данных
 mongo_db = mongo_api.MongoSH().get_mongo_object()[MONGO_NAME_DB]
 
 # Протокол, на котором работает сеть
-if PROTOCOL == 'TCP':
-    # TODO: перенести реализацию для каждого протокола либо в отдельный класс, либо в модуль
-    def send_data_to_sensor():
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # создаем сокет
-        sock.bind((get_address(), PORT))  # связываем сокет с портом, где он будет ожидать сообщения
-        sock.listen(1)  # указываем сколько может сокет принимать соединений
-        while True:
-            conn, addr = sock.accept()  # начинаем принимать соединения
-            print(f'connected: {addr}')  # выводим информацию о подключении
-            logging('connected: addr') # выводим информацию о подключении
-            message_for_sensor = conn.recv(2048).decode()  # принимаем данные от клиента, по 1024 байт
+match PROTOCOL:
+    case 'TCP':
+        # TODO: перенести реализацию для каждого протокола либо в отдельный класс, либо в модуль
+        def send_data_to_sensor():
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # создаем сокет
+            sock.bind((get_address(), PORT))  # связываем сокет с портом, где он будет ожидать сообщения
+            sock.listen(1)  # указываем сколько может сокет принимать соединений
+            while True:
+                conn, addr = sock.accept()  # начинаем принимать соединения
+                print(f'connected: {addr}')  # выводим информацию о подключении
+                logging('connected: addr')  # выводим информацию о подключении
+                message_for_sensor = conn.recv(2048).decode()  # принимаем данные от клиента, по 1024 байт
 
-            client = base_client.Client('127.0.0.1', 8888).get_client()
-            client.send('to_bot_hello!'.encode('utf-8'))
+                client = base_client.Client('127.0.0.1', 8888).get_client()
+                client.send('to_bot_hello!'.encode('utf-8'))
 
-            if message_for_sensor.startswith('/'):
-                # (?<=\/)\w+ - регулярное выражение.
-                # Я просто очищаю команду от говна "/" которое телеграмм добавляет.
-                message_for_sensor = re.search(r'(?<=\/)\w+', message_for_sensor).group()
+                if message_for_sensor.startswith('/'):
+                    # (?<=\/)\w+ - регулярное выражение.
+                    # Я просто очищаю команду от говна "/" которое телеграмм добавляет.
+                    message_for_sensor = re.search(r'(?<=\/)\w+', message_for_sensor).group()
 
-            for type_sensor, commands in read_json_file(PATH_TO_TYPE_SNR):
-                if TYPE_SENSOR == type_sensor:
-                    working_sensor(commands, message_for_sensor)
-                    break
-                else:
-                    continue
-            else:
-                raise TypeSensorException()
-
-elif PROTOCOL == 'MQTT':
-    raise Exception()
-elif PROTOCOL == 'AQMP':
-    raise Exception()
-elif PROTOCOL == 'COAP':
-    raise Exception()
-elif PROTOCOL == 'UDP':
-    raise Exception()
-elif PROTOCOL == 'HTTP':
-    raise Exception()
-else:
-    raise ErrorProtocolException()
+                send_command_to_sensor(message_for_sensor)
+    case 'MQTT':
+        raise Exception()
+    case 'AQMP':
+        raise Exception()
+    case 'COAP':
+        raise Exception()
+    case 'UDP':
+        raise Exception()
+    case 'HTTP':
+        raise Exception()
+    case _:
+        raise ErrorProtocolException()
 
 if __name__ == '__main__':
     thread = Thread(

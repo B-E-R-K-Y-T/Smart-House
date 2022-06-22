@@ -59,7 +59,7 @@ class FunctionsForSensor:
         for attribute in dir(self):
             attribute_value = getattr(self, attribute)
             if callable(attribute_value):
-                if not attribute.startswith('_') and attribute != 'get_methods':
+                if not attribute.startswith('__') and attribute != 'get_methods':
                     methods_dict[attribute] = self.__getattribute__(attribute)
 
         return methods_dict
