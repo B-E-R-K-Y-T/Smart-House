@@ -10,10 +10,9 @@
 # TODO: Добавить кондиционеры, печку
 
 import random
+
 from utility.tools import shm_exceptions
-
 from datetime import datetime
-
 
 # Обычная заглушка для значений
 _PASS = 'PASS'
@@ -32,9 +31,9 @@ class FunctionsForSensor:
         self.status_window_switch = status_window_switch
         self.status_light_level_switch = status_light_level_switch
         self.status_water = status_water
-        self._check_status_network()
+        self.__check_status_network()
 
-    def _check_status_network(self):
+    def __check_status_network(self):
         if self.status_network == 'online':
             return True
         elif self.status_network == 'offline':
@@ -42,87 +41,98 @@ class FunctionsForSensor:
         else:
             raise shm_exceptions.OnlineStatusException
 
-    def _get_status_network(self):
-        if self._check_status_network():
+    def __get_status_network(self):
+        if self.__check_status_network():
             return {'bool': True, 'info': 'Доступ есть!'}
         else:
             return {'bool': False, 'info': 'Не могу получить доступ!'}
 
-    def _now_hour(self):
+    def __now_hour(self):
         return datetime.now().time().hour
 
-    def _get_sub_time_range(self, start, end):
+    def __get_sub_time_range(self, start, end):
         return str(list(range(start, end)))
 
+    def get_methods(self):
+        methods_dict = {}
+
+        for attribute in dir(self):
+            attribute_value = getattr(self, attribute)
+            if callable(attribute_value):
+                if not attribute.startswith('_') and attribute != 'get_methods':
+                    methods_dict[attribute] = self.__getattribute__(attribute)
+
+        return methods_dict
+
     def get_now_date_and_time(self):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             return f'Текущая дата и время = {datetime.now().strftime("Дата: %d/%m/%Y  Время: %H:%M:%S")}'
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def get_name_room(self):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             return self.name_room
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def get_water_in_room(self):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             return self.status_water
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def get_temperature(self):
         """
             Возвращает температуру в комнате в зависимости от времени суток.
         """
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             time_range_with_temperature = {
-                self._get_sub_time_range(0, 6): random.randint(-1, 5),
-                self._get_sub_time_range(6, 10): random.randint(13, 20),
-                self._get_sub_time_range(10, 16): random.randint(20, 30),
-                self._get_sub_time_range(16, 20): random.randint(15, 20),
-                self._get_sub_time_range(20, 24): random.randint(5, 10),
+                self.__get_sub_time_range(0, 6): random.randint(-1, 5),
+                self.__get_sub_time_range(6, 10): random.randint(13, 20),
+                self.__get_sub_time_range(10, 16): random.randint(20, 30),
+                self.__get_sub_time_range(16, 20): random.randint(15, 20),
+                self.__get_sub_time_range(20, 24): random.randint(5, 10),
             }
             temperature = self.temperature
             koef_temperature = 10
 
             for key in time_range_with_temperature:
-                if str(self._now_hour()) in key:
+                if str(self.__now_hour()) in key:
                     temperature = time_range_with_temperature[key]
                     break
 
             return temperature + koef_temperature
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def get_status_online(self):
         return self.status_network
 
     def get_status_window_switch(self):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             return self.status_window_switch
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def get_status_door_switch(self):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             return self.status_door_switch
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def get_status_light_switch(self):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             return self.status_light_switch
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def get_light_level(self):
         """
             Возвращает уровень освещенности в комнате в зависимости от того, открыло ли окно, открыта ли дверь и
             включен ли свет?
         """
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             koef_light_level = random.randint(5, 10)
             result_list = [koef_light_level]
 
@@ -132,45 +142,47 @@ class FunctionsForSensor:
 
             return sum(result_list)
         else:
-            return self._get_status_network()['info']
+            return self.__get_status_network()['info']
 
     def set_status_network(self, new_status_network):
         self.status_network = new_status_network
 
     def set_status_door_switch(self, status_window_switch):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             self.status_window_switch = status_window_switch
         else:
-            print(self._get_status_network()['info'])
+            print(self.__get_status_network()['info'])
 
     def set_status_light_switch(self, status_light_switch):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             self.status_light_switch = status_light_switch
         else:
-            print(self._get_status_network()['info'])
+            print(self.__get_status_network()['info'])
 
     def set_name_room(self, name_room):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             self.name_room = name_room
         else:
-            print(self._get_status_network()['info'])
+            print(self.__get_status_network()['info'])
 
     def set_water_in_room(self, status_water):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             self.status_water = status_water
         else:
-            print(self._get_status_network()['info'])
+            print(self.__get_status_network()['info'])
 
     def test_function(self):
-        if self._get_status_network()['bool']:
+        if self.__get_status_network()['bool']:
             print('test_function')
         else:
-            print(self._get_status_network()['info'])
+            print(self.__get_status_network()['info'])
 
 
 if __name__ == '__main__':
     # Тестовый код
+
     dfs = FunctionsForSensor(name_sensor='test_sensor', status_network='offline', name_room='Спальня')
+    print(dfs.get_methods())
     print('Вывод без подключения к сети: ')
     print(dfs.get_temperature())
 

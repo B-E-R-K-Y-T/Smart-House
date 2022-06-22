@@ -22,6 +22,7 @@ from utility.database import mongo_api
 from datetime import datetime
 from config import PATH_TO_TYPE_SNR, IP_SERVER, PORT_SERVER
 from config_files.main_config import MONGO_NAME_DB
+from utility.tools import base_client
 from utility.tools.parse_files import read_json_file
 from utility.tools.static_type import decorate_static_type
 from utility.tools.shm_exceptions import TypeSensorException, ErrorProtocolException
@@ -29,20 +30,6 @@ from threading import Thread
 from utility.sensor.base_sensor import Sensor
 from utility.sensor.base_functions_for_sensor import FunctionsForSensor
 from characteristics_parser import ConfigReader
-
-config_reader = ConfigReader()
-
-TYPE_SENSOR = config_reader.get_characteristic('type_sensor')
-
-NAME_SENSOR = config_reader.get_characteristic('name_sensor')
-
-NAME_ROOM = config_reader.get_characteristic('name_sensor')
-
-PORT = config_reader.get_characteristic('port')
-
-PROTOCOL = config_reader.get_characteristic('main_protocol').upper()
-
-MAC_ADDRESS = config_reader.get_characteristic('address')['mac_address']
 
 
 # Заглушки
@@ -120,7 +107,7 @@ def working_sensor(arg_commands: dict, message_for_sensor: str):
             to_do = structure_command['to_do']
             if message_for_sensor.startswith('config_'):
                 args = structure_command['args'].replace(' ', '').split(',')
-                dict_func[to_do](*args)
+                DICT_METHODS[to_do](*args)
                 break
             elif message_for_sensor.startswith('f_'):
                 pass
@@ -131,7 +118,7 @@ def working_sensor(arg_commands: dict, message_for_sensor: str):
                 # в функции из FunctionsForSensor.
                 function_list = []
                 for function in get_functions_from_request(to_do):
-                    function_list.append(dict_func[function])
+                    function_list.append(DICT_METHODS[function])
                 # Форматирую строку: создаю словарь названий функций. С помощью
                 # функции replace_dict удаляю их, но оставляю после них такой
                 # шаблон {} для метода .format в котором распаковываю список
@@ -152,32 +139,30 @@ def working_sensor(arg_commands: dict, message_for_sensor: str):
             write_logs(f'Такой "{message_for_sensor}" команды нет!')
 
 
+config_reader = ConfigReader()
+
+TYPE_SENSOR = config_reader.get_characteristic('type_sensor')
+
+NAME_SENSOR = config_reader.get_characteristic('name_sensor')
+
+NAME_ROOM = config_reader.get_characteristic('name_sensor')
+
+PORT = config_reader.get_characteristic('port')
+
+PROTOCOL = config_reader.get_characteristic('main_protocol').upper()
+
+MAC_ADDRESS = config_reader.get_characteristic('address')['mac_address']
+
 SENSOR = Sensor(get_address(), MAC_ADDRESS)
-# Сообщения, которые будут отправляться сенсору.
-message_for_sensor = None
 # Универсальный объект, который генерирует данные для всех типов сенсоров.
 functions_for_sensor = FunctionsForSensor(name_sensor=NAME_SENSOR,
                                           status_network='online',
                                           name_room=NAME_ROOM)
+# Функционал сенсора
+DICT_METHODS = functions_for_sensor.get_methods()
 # База данных
 mongo_db = mongo_api.MongoSH().get_mongo_object()[MONGO_NAME_DB]
-# Функционал сенсора:
-dict_func = {
-    'get_now_date_and_time': functions_for_sensor.get_now_date_and_time,
-    'get_name_room': functions_for_sensor.get_name_room,
-    'get_water_in_room': functions_for_sensor.get_water_in_room,
-    'get_temperature': functions_for_sensor.get_temperature,
-    'get_status_online': functions_for_sensor.get_status_online,
-    'get_status_window_switch': functions_for_sensor.get_status_window_switch,
-    'get_status_door_switch': functions_for_sensor.get_status_door_switch,
-    'get_status_light_switch': functions_for_sensor.get_status_light_switch,
-    'get_light_level': functions_for_sensor.get_light_level,
-    'set_status_network': functions_for_sensor.set_status_network,
-    'set_status_door_switch': functions_for_sensor.set_status_door_switch,
-    'set_status_light_switch': functions_for_sensor.set_status_light_switch,
-    'set_name_room': functions_for_sensor.set_name_room,
-    'set_water_in_room': functions_for_sensor.set_water_in_room,
-}
+
 # Протокол, на котором работает сеть
 if PROTOCOL == 'TCP':
     # TODO: перенести реализацию для каждого протокола либо в отдельный класс, либо в модуль
@@ -190,6 +175,10 @@ if PROTOCOL == 'TCP':
             print(f'connected: {addr}')  # выводим информацию о подключении
             logging('connected: addr') # выводим информацию о подключении
             message_for_sensor = conn.recv(2048).decode()  # принимаем данные от клиента, по 1024 байт
+
+            client = base_client.Client('127.0.0.1', 8888).get_client()
+            client.send('to_bot_hello!'.encode('utf-8'))
+
             if message_for_sensor.startswith('/'):
                 # (?<=\/)\w+ - регулярное выражение.
                 # Я просто очищаю команду от говна "/" которое телеграмм добавляет.
